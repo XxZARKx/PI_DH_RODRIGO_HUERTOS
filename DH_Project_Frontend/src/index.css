@@ -1,0 +1,98 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* general */
+.max-w-1280 {
+  max-width: 1280px;
+}
+
+/* login */
+.bg-autheticate {
+  background-image: url("./assets/bgAuthenticate.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.form-login {
+  border-radius: 30px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 1px solid black;
+}
+
+.form-input {
+  width: 90%;
+  margin: 0 auto;
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 5px 4px;
+}
+
+/* header */
+.header-navlist > li {
+  list-style-type: none;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.header-navlist > li:hover {
+  text-decoration: underline;
+}
+
+.header-navlist li a {
+  color: black !important;
+  text-decoration: none;
+}
+
+/* card auto */
+.cardAuto {
+  box-shadow: 1px 10px 20px rgba(0, 0, 0, 0.7);
+}
+
+/* Estilos para el slider */
+
+.slick-slide {
+  padding: 0 10px;
+}
+
+.slick-slide div {
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  height: max-content;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Ajusta el color y tamaño de las flechas */
+.slick-prev:before,
+.slick-next:before {
+  color: black !important;
+  font-size: 25px !important;
+}
+
+.slick-next {
+  right: -30px !important;
+}
+
+.slick-prev {
+  left: -30px !important;
+}
+
+@media (max-width: 768px) {
+  .slick-prev,
+  .slick-next {
+    display: none !important;
+  }
+
+  .slick-prev:before,
+  .slick-next:before {
+    display: none !important;
+  }
+}
