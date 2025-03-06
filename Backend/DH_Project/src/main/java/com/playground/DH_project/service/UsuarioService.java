@@ -25,20 +25,31 @@ public class UsuarioService {
 
     // Crea un nuevo usuario, validando que el correo no esté duplicado y hasheando la contraseña
     public Usuario crearUsuario(Usuario usuario) {
-        if (usuarioRepository.findByCorreo(usuario.getCorreo()).isPresent()) {
+        Optional<Usuario> usuarioExistente = usuarioRepository.findByCorreo(usuario.getCorreo());
+
+        if (usuarioExistente.isPresent()) {
+            System.out.println("DEBUG: El usuario ya existe en la BD");
             throw new RuntimeException("El correo ya está registrado");
+        } else {
+            System.out.println("DEBUG: No se encontró el usuario en la BD");
         }
-        // Hashea la contraseña antes de guardar
+
+        // Hashear la contraseña antes de guardar
         usuario.setContrasena(passwordEncoder.encode(usuario.getContrasena()));
-        return usuarioRepository.save(usuario);
+
+        // Guardar el usuario en la BD
+        Usuario nuevoUsuario = usuarioRepository.save(usuario);
+        System.out.println("DEBUG: Usuario guardado correctamente en la BD");
+
+        return nuevoUsuario;
     }
+
 
     // Busca un usuario por su correo
     public Optional<Usuario> buscarPorCorreo(String correo) {
         return usuarioRepository.findByCorreo(correo);
     }
 
-    // Actualiza un usuario existente
     public Usuario actualizarUsuario(Integer id, Usuario usuarioDetalles) {
         Usuario usuarioExistente = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
@@ -49,7 +60,6 @@ public class UsuarioService {
         usuarioExistente.setDni(usuarioDetalles.getDni());
         usuarioExistente.setRol(usuarioDetalles.getRol());
 
-        // Si se actualiza la contraseña, se hashea
         if (usuarioDetalles.getContrasena() != null && !usuarioDetalles.getContrasena().isEmpty()) {
             usuarioExistente.setContrasena(passwordEncoder.encode(usuarioDetalles.getContrasena()));
         }
