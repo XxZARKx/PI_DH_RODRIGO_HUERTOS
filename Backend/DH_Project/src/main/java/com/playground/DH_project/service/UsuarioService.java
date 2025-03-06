@@ -25,25 +25,22 @@ public class UsuarioService {
 
     // Crea un nuevo usuario, validando que el correo no esté duplicado y hasheando la contraseña
     public Usuario crearUsuario(Usuario usuario) {
-        Optional<Usuario> usuarioExistente = usuarioRepository.findByCorreo(usuario.getCorreo());
 
-        if (usuarioExistente.isPresent()) {
+        if (usuarioRepository.existsByCorreo(usuario.getCorreo())) {
             System.out.println("DEBUG: El usuario ya existe en la BD");
             throw new RuntimeException("El correo ya está registrado");
-        } else {
-            System.out.println("DEBUG: No se encontró el usuario en la BD");
         }
 
-        // Hashear la contraseña antes de guardar
+        if (usuario.getContrasena() == null || usuario.getContrasena().isEmpty()) {
+            throw new RuntimeException("La contraseña no puede estar vacía");
+        }
+
         usuario.setContrasena(passwordEncoder.encode(usuario.getContrasena()));
 
-        // Guardar el usuario en la BD
         Usuario nuevoUsuario = usuarioRepository.save(usuario);
-        System.out.println("DEBUG: Usuario guardado correctamente en la BD");
 
         return nuevoUsuario;
     }
-
 
     // Busca un usuario por su correo
     public Optional<Usuario> buscarPorCorreo(String correo) {
