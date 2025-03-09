@@ -18,31 +18,32 @@ public class UsuarioService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // Lista todos los usuarios
     public List<Usuario> obtenerTodos() {
         return usuarioRepository.findAll();
     }
 
-    // Crea un nuevo usuario, validando que el correo no esté duplicado y hasheando la contraseña
     public Usuario crearUsuario(Usuario usuario) {
-
-        if (usuarioRepository.existsByCorreo(usuario.getCorreo())) {
-            System.out.println("DEBUG: El usuario ya existe en la BD");
+        // Verificar si el correo ya está registrado
+        if (usuarioRepository.findByCorreo(usuario.getCorreo()).isPresent()) {
             throw new RuntimeException("El correo ya está registrado");
         }
 
+        // Validar que la contraseña no esté vacía
         if (usuario.getContrasena() == null || usuario.getContrasena().isEmpty()) {
             throw new RuntimeException("La contraseña no puede estar vacía");
         }
 
+        // Encriptar la contraseña antes de guardar
         usuario.setContrasena(passwordEncoder.encode(usuario.getContrasena()));
 
         Usuario nuevoUsuario = usuarioRepository.save(usuario);
+        System.out.println("DEBUG: Usuario guardado con éxito -> ID: " + nuevoUsuario.getId());
 
         return nuevoUsuario;
     }
 
-    // Busca un usuario por su correo
+
+
     public Optional<Usuario> buscarPorCorreo(String correo) {
         return usuarioRepository.findByCorreo(correo);
     }
@@ -64,7 +65,6 @@ public class UsuarioService {
         return usuarioRepository.save(usuarioExistente);
     }
 
-    // Elimina un usuario por ID
     public void eliminarUsuario(Integer id) {
         Usuario usuarioExistente = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
