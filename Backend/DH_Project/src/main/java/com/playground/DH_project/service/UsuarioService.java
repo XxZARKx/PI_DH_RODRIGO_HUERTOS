@@ -1,6 +1,8 @@
 package com.playground.DH_project.service;
 
+import com.playground.DH_project.model.RolUsuario;
 import com.playground.DH_project.model.Usuario;
+import com.playground.DH_project.repository.RolUsuarioRepository;
 import com.playground.DH_project.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,25 +24,28 @@ public class UsuarioService {
         return usuarioRepository.findAll();
     }
 
+    @Autowired
+    private RolUsuarioRepository rolUsuarioRepository;
+
     public Usuario crearUsuario(Usuario usuario) {
-        // Verificar si el correo ya está registrado
         if (usuarioRepository.findByCorreo(usuario.getCorreo()).isPresent()) {
             throw new RuntimeException("El correo ya está registrado");
         }
 
-        // Validar que la contraseña no esté vacía
         if (usuario.getContrasena() == null || usuario.getContrasena().isEmpty()) {
             throw new RuntimeException("La contraseña no puede estar vacía");
         }
 
-        // Encriptar la contraseña antes de guardar
+        // 🛠 Buscar el rol en la base de datos en lugar de recibirlo directamente
+        RolUsuario rolCliente = rolUsuarioRepository.findById(2)
+                .orElseThrow(() -> new RuntimeException("Rol CLIENTE no encontrado"));
+
+        usuario.setRol(rolCliente);
         usuario.setContrasena(passwordEncoder.encode(usuario.getContrasena()));
 
-        Usuario nuevoUsuario = usuarioRepository.save(usuario);
-        System.out.println("DEBUG: Usuario guardado con éxito -> ID: " + nuevoUsuario.getId());
-
-        return nuevoUsuario;
+        return usuarioRepository.save(usuario);
     }
+
 
 
 

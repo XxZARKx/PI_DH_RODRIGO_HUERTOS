@@ -12,9 +12,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<?> handleRuntimeException(RuntimeException ex) {
-        // Puedes crear un objeto de error personalizado
+
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
-    // Agrega más manejadores para otras excepciones si lo necesitas
 }
