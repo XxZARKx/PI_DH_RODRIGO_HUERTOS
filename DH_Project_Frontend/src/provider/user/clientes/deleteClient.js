@@ -1,11 +1,8 @@
-import { supabase } from "../../../../api/supabaseClient";
+import api from "../../../../api/api";
 
 export const deleteClient = async (id) => {
 	try {
-		const { data, error } = await supabase
-			.from("usuario")
-			.delete()
-			.eq("id", id);
+		const { data, error } = await api.delete(`/usuario/${id}`);
 
 		if (error) {
 			console.error("Error al eliminar el usuario:", error);

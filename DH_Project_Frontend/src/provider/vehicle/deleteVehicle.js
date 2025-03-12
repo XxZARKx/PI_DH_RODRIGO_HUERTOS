@@ -1,11 +1,8 @@
-import { supabase } from "../../../api/supabaseClient";
+import api from "../../../api/api";
 
 export const deleteVehicle = async (id) => {
 	try {
-		const { data, error } = await supabase
-			.from("vehiculo")
-			.delete()
-			.eq("id", id);
+		const { data, error } = await api.delete(`/vehiculo/${id}`);
 
 		if (error) {
 			console.error("Error al eliminar el vehículo:", error);

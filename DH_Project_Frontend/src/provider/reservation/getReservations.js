@@ -1,8 +1,8 @@
-import { supabase } from "../../../api/supabaseClient";
+import api from "../../../api/api";
 
 export const getReservations = async () => {
 	try {
-		const { data, error } = await supabase.from("reserva").select("*");
+		const { data, error } = await api.get("/reserva");
 		if (error) {
 			throw new Error(error.message); // Si hay error en la consulta, lanzamos el error
 		}

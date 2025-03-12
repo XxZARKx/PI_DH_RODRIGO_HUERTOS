@@ -5,25 +5,20 @@ import Avatar from "@assets/avatarUser.png";
 const UserMenu = ({ user, onLogout, isMobile = false }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
-
   const toggleMenu = () => setMenuOpen(!menuOpen);
   const closeMenu = () => setMenuOpen(false);
-
   const handleLogout = () => {
     closeMenu();
     onLogout();
   };
-
   const goToReservations = () => {
     closeMenu();
     navigate("/mis-reservas");
   };
-
   const goToRegisterAdmin = () => {
     closeMenu();
     navigate("/register/admin");
   };
-
   const renderDesktopMenu = () => (
     <div className="relative inline-block text-left">
       <div
@@ -35,7 +30,6 @@ const UserMenu = ({ user, onLogout, isMobile = false }) => {
         </span>
         <img src={Avatar} alt="Avatar" className="w-10 h-10 rounded-full" />
       </div>
-
       {menuOpen && (
         <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded-md shadow-lg z-20">
           {user.tipo === 1 && (
@@ -62,7 +56,6 @@ const UserMenu = ({ user, onLogout, isMobile = false }) => {
       )}
     </div>
   );
-
   const renderMobileMenu = () => (
     <ul className="flex flex-col gap-4 text-lg">
       {user ? (
@@ -95,7 +88,6 @@ const UserMenu = ({ user, onLogout, isMobile = false }) => {
       )}
     </ul>
   );
-
   return isMobile ? renderMobileMenu() : renderDesktopMenu();
 };
 

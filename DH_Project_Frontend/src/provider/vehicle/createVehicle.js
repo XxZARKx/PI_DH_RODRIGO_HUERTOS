@@ -1,7 +1,7 @@
-import { supabase } from "../../../api/supabaseClient";
+import api from "../../../api/api";	
 
 export const createVehicle = async (vehicle) => {
-	const { data, error } = await supabase.from("vehiculo").insert([vehicle]);
+	const { data, error } = await api.post("/vehiculo", vehicle);
 
 	if (error) {
 		console.error("Error al crear el vehículo:", error);

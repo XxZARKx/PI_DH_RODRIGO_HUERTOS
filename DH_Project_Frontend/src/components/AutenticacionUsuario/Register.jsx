@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Swal from "sweetalert2";
-import { registerClient } from "../provider/user/clientes/registerClient";
+import { registerClient } from "../../provider/user/clientes/registerClient";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/16/solid";
 import logo from "@assets/logo.svg";
 import { Link } from "react-router-dom";
@@ -11,14 +11,13 @@ const RegisterForm = ({ tipo, titulo }) => {
     apellido: "",
     dni: "",
     correo: "",
-    contraseña: "",
+    contrasena: "",
     confirmPassword: "",
   });
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -26,10 +25,8 @@ const RegisterForm = ({ tipo, titulo }) => {
       [name]: value,
     });
   };
-
   const validateForm = () => {
     const newErrors = {};
-
     if (!formData.nombre) newErrors.nombre = "El nombre es obligatorio";
     if (!formData.apellido) newErrors.apellido = "El apellido es obligatorio";
     if (!formData.dni || formData.dni.length < 8)
@@ -38,17 +35,15 @@ const RegisterForm = ({ tipo, titulo }) => {
       newErrors.correo = "El correo electrónico es obligatorio";
     else if (!/\S+@\S+\.\S+/.test(formData.correo))
       newErrors.correo = "El correo electrónico no es válido";
-    if (!formData.contraseña)
-      newErrors.contraseña = "La contraseña es obligatoria";
+    if (!formData.contrasena)
+      newErrors.contrasena = "La contrasena es obligatoria";
     if (!formData.confirmPassword)
       newErrors.confirmPassword =
-        "La confirmación de contraseña es obligatoria";
-    else if (formData.contraseña !== formData.confirmPassword)
+        "La confirmación de contrasena es obligatoria";
+    else if (formData.contrasena !== formData.confirmPassword)
       newErrors.confirmPassword = "Las contraseñas no coinciden";
-
     return newErrors;
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     const validationErrors = validateForm();
@@ -59,8 +54,7 @@ const RegisterForm = ({ tipo, titulo }) => {
         apellido: formData.apellido,
         dni: formData.dni,
         correo: formData.correo,
-        contraseña: formData.contraseña,
-        tipo: tipo, // El tipo se asigna según el valor pasado
+        contrasena: formData.contrasena,
       };
 
       const { success, message } = await registerClient(userData);
@@ -70,15 +64,14 @@ const RegisterForm = ({ tipo, titulo }) => {
         Swal.fire({
           icon: "success",
           title: "Registro exitoso",
-          text: "Se ha enviado un correo de confirmación a tu email.",
-          confirmButtonText: "Entendido",
+          text: message,
         });
         setFormData({
           nombre: "",
           apellido: "",
           dni: "",
           correo: "",
-          contraseña: "",
+          contrasena: "",
           confirmPassword: "",
         });
       } else {
@@ -92,15 +85,12 @@ const RegisterForm = ({ tipo, titulo }) => {
       setErrors(validationErrors);
     }
   };
-
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-
   const toggleConfirmPasswordVisibility = () => {
     setShowConfirmPassword(!showConfirmPassword);
   };
-
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center">
       <span className="bg-autheticate z-10" />
@@ -127,7 +117,6 @@ const RegisterForm = ({ tipo, titulo }) => {
               <span className="text-red-500">{errors.nombre}</span>
             )}
           </div>
-
           <div>
             <input
               type="text"
@@ -143,7 +132,6 @@ const RegisterForm = ({ tipo, titulo }) => {
               <span className="text-red-500">{errors.apellido}</span>
             )}
           </div>
-
           <div>
             <input
               type="text"
@@ -157,7 +145,6 @@ const RegisterForm = ({ tipo, titulo }) => {
             />
             {errors.dni && <span className="text-red-500">{errors.dni}</span>}
           </div>
-
           <div>
             <input
               type="email"
@@ -173,17 +160,16 @@ const RegisterForm = ({ tipo, titulo }) => {
               <span className="text-red-500">{errors.correo}</span>
             )}
           </div>
-
           <div>
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
-                name="contraseña"
+                name="contrasena"
                 placeholder="Contraseña"
-                value={formData.contraseña}
+                value={formData.contrasena}
                 onChange={handleChange}
                 className={`w-full p-3 border ${
-                  errors.contraseña ? "border-red-500" : "border-gray-300"
+                  errors.contrasena ? "border-red-500" : "border-gray-300"
                 } rounded-lg`}
               />
               <button
@@ -198,11 +184,10 @@ const RegisterForm = ({ tipo, titulo }) => {
                 )}
               </button>
             </div>
-            {errors.contraseña && (
-              <span className="text-red-500">{errors.contraseña}</span>
+            {errors.contrasena && (
+              <span className="text-red-500">{errors.contrasena}</span>
             )}
           </div>
-
           <div>
             <div className="relative">
               <input
@@ -231,7 +216,6 @@ const RegisterForm = ({ tipo, titulo }) => {
               <span className="text-red-500">{errors.confirmPassword}</span>
             )}
           </div>
-
           <button
             type="submit"
             disabled={isLoading}

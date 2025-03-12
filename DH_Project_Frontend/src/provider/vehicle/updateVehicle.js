@@ -1,10 +1,7 @@
-import { supabase } from "../../../api/supabaseClient";
+import api from "../../../api/api";
 
 export const updateVehicle = async (vehicle) => {
-	const { data, error } = await supabase
-		.from("vehiculo")
-		.update(vehicle)
-		.eq("id", vehicle.id);
+	const { data, error } = await api.put(`/vehiculo/${vehicle.id}`, vehicle);
 
 	if (error) {
 		console.error("Error al actualizar el vehículo:", error);

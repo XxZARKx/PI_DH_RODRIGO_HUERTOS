@@ -1,4 +1,4 @@
-import { supabase } from "../../../api/supabaseClient";
+import api from "../../../api/api";
 
 export const getAuthUserById = async (userId) => {
 	try {
@@ -7,7 +7,7 @@ export const getAuthUserById = async (userId) => {
 		}
 
 		// Llamar a la función de Supabase para obtener el usuario por ID
-		const { data, error } = await supabase.auth.admin.getUserById(userId);
+		const { data, error } = await api.get(`/auth/user/${userId}`);
 
 		if (error) {
 			throw new Error(`Error al obtener el usuario: ${error.message}`);

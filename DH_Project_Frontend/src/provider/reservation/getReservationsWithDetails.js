@@ -1,4 +1,4 @@
-import { supabase } from "../../../api/supabaseClient";
+import api from "../../../api/api";
 
 export const getReservationsWithDetails = async () => {
 	try {
@@ -7,7 +7,7 @@ export const getReservationsWithDetails = async () => {
 				const {
 					data: { user },
 					error,
-				} = await supabase.auth.admin.getUserById(id);
+				} = await api.get(`/auth/user/${id}`);
 				if (error) {
 					throw error;
 				}

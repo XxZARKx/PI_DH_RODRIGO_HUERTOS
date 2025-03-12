@@ -1,6 +1,5 @@
 import React from "react";
 import Slider from "react-slick";
-import socioImage from "@assets/colab1.svg";
 import { colabsLogo } from "../utils/colabsLogo";
 
 function CarrouselColabs() {
@@ -21,13 +20,11 @@ function CarrouselColabs() {
   return (
     <div className="pX-[50px] mx-auto max-w-[500px]">
       <Slider {...settings}>
-        {
-          colabsLogo.map((colab) => (
-            <div key={colab.id}>
-              <img className="h-full w-full" src={colab.url} alt={colab.alt} />
-            </div>
-          ))
-        }
+        {colabsLogo.map((colab) => (
+          <div key={colab.id}>
+            <img className="h-full w-full" src={colab.url} alt={colab.alt} />
+          </div>
+        ))}
       </Slider>
     </div>
   );

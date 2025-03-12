@@ -1,12 +1,12 @@
 // src/auth.js
-import { supabase } from "../../../api/supabaseClient";
+import api from "../../../api/api";
 
 export const getAuthenticatedUser = async () => {
 	try {
 		const {
 			data: { user },
 			error,
-		} = await supabase.auth.getUser();
+		} = await api.get("/auth/user");
 		if (error) {
 			throw error;
 		}

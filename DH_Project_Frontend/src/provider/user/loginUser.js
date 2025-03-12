@@ -1,26 +1,21 @@
-import { supabase } from "../../../api/supabaseClient";
+import api from "../../../api/api";
 
 export const loginUser = async (email, password) => {
-	try {
-		const { data, error } = await supabase.auth.signInWithPassword({
-			email,
-			password,
-		});
+  try {
+    const { data } = await api.post("/auth/login", {
+      correo: email,
+      contrasena: password,
+    });
 
-		if (error) {
-			if (error.message.includes("Email not confirmed")) {
-				throw new Error(
-					"Por favor, confirma tu correo electrónico antes de iniciar sesión."
-				);
-			}
-			throw new Error(error.message);
-		}
+    if (!data.jwt) {
+      throw new Error("Error: No se recibió un token.");
+    }
 
-		const { nombre, apellido } = data.user.user_metadata || {};
+    localStorage.setItem("token", data.jwt);
 
-		return { ...data.user, nombre, apellido };
-	} catch (error) {
-		console.error("Error al intentar iniciar sesión:", error.message);
-		throw error;
-	}
+    return { success: true, token: data.jwt };
+  } catch (error) {
+    console.error("Error al intentar iniciar sesión:", error.response?.data || error.message);
+    throw new Error(error.response?.data || "Error al iniciar sesión.");
+  }
 };

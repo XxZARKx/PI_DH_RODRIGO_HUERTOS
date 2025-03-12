@@ -1,12 +1,8 @@
-import { supabase } from "../../../api/supabaseClient";
+import api from "../../../api/api";
 
 export const getVehicleById = async (id) => {
 	try {
-		const { data, error } = await supabase
-			.from("vehiculo")
-			.select("*")
-			.eq("id", id)
-			.single();
+		const { data, error } = await api.get(`/vehiculo/${id}`);
 
 		if (error) {
 			throw new Error(error.message);

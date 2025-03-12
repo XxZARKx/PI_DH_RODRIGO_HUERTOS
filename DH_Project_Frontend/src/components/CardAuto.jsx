@@ -7,7 +7,7 @@ const CardAuto = ({ vehicle }) => {
     <div className="w-full bg-[#ffffff] h-full border-solid border flex flex-col items-center justify-between p-5 rounded-2xl cardAuto transition-all ease-in-out duration-[.7s]">
       <img
         className="w-[50%] h-[80px] object-fill"
-        src={vehicle.imagen_url}
+        src={vehicle.imagenUrl}
         alt={vehicle.marca}
       />
       <p className="py-2">{vehicle.marca}</p>
@@ -15,7 +15,7 @@ const CardAuto = ({ vehicle }) => {
         <Tooltip title={"Cantidad de personas"}>
           <p className="flex items-center gap-x-2 w-[20%]">
             <i className="fa-solid fa-user" />
-            {vehicle.cantidadpersonas}
+            {vehicle.cantidadPersonas}
           </p>
         </Tooltip>
         <Tooltip title={"Puertas"}>

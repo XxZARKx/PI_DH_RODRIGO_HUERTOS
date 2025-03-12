@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { loginUser } from "../provider/user/loginUser";
+import { loginUser } from "../../provider/user/loginUser";
 import logo from "@assets/logo.svg";
 import { Link } from "react-router-dom";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/16/solid";
@@ -9,22 +9,14 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const user = await loginUser(email, password);
+      const response = await loginUser(email, password);
 
-      if (!user) {
-        setErrorMessage("Error: Usuario no encontrado.");
-        return;
+      if (response.success) {
+        window.location.href = "/";
       }
-
-      // Guarda los datos del usuario en localStorage
-      localStorage.setItem("user", JSON.stringify(user));
-
-      // Navega a una página protegida después del login exitoso
-      window.location.href = "/";
     } catch (error) {
       setErrorMessage(error.message || "Error al iniciar sesión.");
     }
@@ -33,13 +25,11 @@ const Login = () => {
   return (
     <div className="w-screen h-screen flex items-center justify-center bg-gradient-to-r">
       <span className="bg-autheticate" />
-
       <div className="bg-white p-8 rounded-xl shadow-xl max-w-sm w-full z-40">
         <img src={logo} alt="logo" className="mx-auto mb-6 w-32" />
         <h2 className="text-center text-3xl font-bold mb-6 text-gray-800">
           Iniciar Sesión
         </h2>
-
         <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
           <input
             className="px-4 py-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"

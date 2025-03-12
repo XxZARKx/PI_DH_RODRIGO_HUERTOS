@@ -1,11 +1,8 @@
-import { supabase } from "../../../../api/supabaseClient";
+import api from "../../../../api/api";
 
 export const getClient = async () => {
 	try {
-		const { data, error } = await supabase
-			.from("usuario")
-			.select("*")
-			.eq("tipo", 2);
+		const { data, error } = await api.get("/usuario?tipo=2");
 
 		if (error) {
 			throw new Error(error.message);

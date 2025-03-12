@@ -1,61 +1,53 @@
 import { supabase } from "../../../../api/supabaseClient";
 
 export const registerClient = async (clientData) => {
-	const { nombre, apellido, dni, correo, contraseña, tipo } = clientData;
+    const { nombre, apellido, dni, correo, contrasena } = clientData;
 
-	const { data: existingUser, error: checkError } = await supabase
-		.from("usuario")
-		.select("correo")
-		.eq("correo", correo);
+    try {
+        // 🔹 Registrar usuario en Supabase Auth (sin usar el ID generado por Supabase)
+        const { data, error } = await supabase.auth.signUp({
+            email: correo,
+            password: contrasena,
+            options: {
+                data: {
+                    nombre,
+                    apellido,
+                    dni,
+                    tipo: 2, // Cliente
+                },
+            },
+        });
 
-	if (checkError) {
-		console.error("Error al verificar el correo:", checkError);
-		return { success: false, message: checkError.message || checkError };
-	}
+        if (error) {
+            throw error;
+        }
 
-	if (existingUser.length > 0) {
-		return { success: false, message: "El correo ya está registrado." };
-	}
+        // 🔹 Guardar usuario en la tabla "usuario" (dejando que el ID se genere solo)
+        const { error: dbError } = await supabase.from("usuario").insert([
+            {
+                nombre,
+                apellido,
+                dni,
+                correo,
+                contraseña: contrasena, // 👈 Asegurar que se envía la contraseña
+                tipo: 2, // 👈 Relación con "rol_usuario" (2 = Cliente)
+            },
+        ]);
 
-	// Si el correo no está registrado, proceder con el registro
-	const { user, error: authError } = await supabase.auth.signUp({
-		email: correo,
-		password: contraseña,
-		options: {
-			data: {
-				nombre,
-				apellido,
-				tipo,
-			},
-		},
-	});
+        if (dbError) {
+            throw dbError;
+        }
 
-	if (authError) {
-		console.error("Error al registrar el cliente:", authError);
-		return { success: false, message: authError.message || authError };
-	}
-
-	// Insertar los datos adicionales del cliente en la tabla 'usuario'
-	const { data, error } = await supabase.from("usuario").insert([
-		{
-			nombre,
-			apellido,
-			dni,
-			correo,
-			contraseña,
-			tipo,
-		},
-	]);
-
-	if (error) {
-		console.error("Error al insertar datos en la base de datos:", error);
-		return { success: false, message: error.message || error };
-	}
-
-	console.log("Cliente registrado con éxito:", data);
-	return {
-		success: true,
-		message:
-			"Cliente registrado con éxito. Revisa tu correo para confirmar la cuenta.",
-	};
+        console.log("Usuario registrado y guardado en la base de datos.");
+        return {
+            success: true,
+            message: "Se ha enviado un correo de confirmación a tu email.",
+        };
+    } catch (error) {
+        console.error("Error al registrar el cliente:", error.message);
+        return {
+            success: false,
+            message: error.message || "Error al registrar el usuario",
+        };
+    }
 };
