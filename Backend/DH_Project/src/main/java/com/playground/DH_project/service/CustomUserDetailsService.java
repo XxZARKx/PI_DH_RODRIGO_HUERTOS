@@ -23,6 +23,11 @@ public class CustomUserDetailsService implements UserDetailsService {
         Usuario usuario = usuarioRepository.findByCorreo(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado con correo: " + username));
 
+        // 🔹 Verificar que el usuario tiene un rol asignado
+        if (usuario.getRol() == null) {
+            throw new UsernameNotFoundException("Usuario sin rol asignado");
+        }
+
         SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + usuario.getRol().getTipo());
 
         return new User(usuario.getCorreo(), usuario.getContrasena(), Collections.singletonList(authority));
