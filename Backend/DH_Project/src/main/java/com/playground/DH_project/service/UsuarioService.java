@@ -4,7 +4,6 @@ import com.playground.DH_project.model.RolUsuario;
 import com.playground.DH_project.model.Usuario;
 import com.playground.DH_project.repository.RolUsuarioRepository;
 import com.playground.DH_project.repository.UsuarioRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -14,21 +13,23 @@ import java.util.Optional;
 @Service
 public class UsuarioService {
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final RolUsuarioRepository rolUsuarioRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    // ✅ Inyección de dependencias a través del constructor
+    public UsuarioService(UsuarioRepository usuarioRepository, RolUsuarioRepository rolUsuarioRepository, PasswordEncoder passwordEncoder) {
+        this.usuarioRepository = usuarioRepository;
+        this.rolUsuarioRepository = rolUsuarioRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
-    @Autowired
-    private RolUsuarioRepository rolUsuarioRepository;
-
-    public List<Usuario> obtenerTodos() {
+    public List<Usuario> obtenerUsuarios() {
         return usuarioRepository.findAll();
     }
 
     public Usuario crearUsuario(Usuario usuario) {
-        // 🔹 Verificar si el correo ya existe
+        // 🔹 Verificar si el correo ya está registrado
         if (usuarioRepository.findByCorreo(usuario.getCorreo()).isPresent()) {
             throw new RuntimeException("El correo ya está registrado");
         }
@@ -38,15 +39,21 @@ public class UsuarioService {
             throw new RuntimeException("La contraseña no puede estar vacía");
         }
 
-        // 🔹 Asignar el rol de CLIENTE (id = 2)
+        // 🔹 Verificar si `passwordEncoder` está funcionando correctamente
+        if (passwordEncoder == null) {
+            throw new RuntimeException("Error crítico: passwordEncoder no ha sido inyectado correctamente.");
+        }
+
+        // 🔹 Asignar el rol por defecto "CLIENTE"
         RolUsuario rolCliente = rolUsuarioRepository.findById(2)
                 .orElseThrow(() -> new RuntimeException("Rol CLIENTE no encontrado"));
         usuario.setRol(rolCliente);
 
         // 🔹 Encriptar la contraseña antes de guardar
-        usuario.setContrasena(passwordEncoder.encode(usuario.getContrasena()));
+        String contrasenaEncriptada = passwordEncoder.encode(usuario.getContrasena());
+        usuario.setContrasena(contrasenaEncriptada);
 
-        // 🔹 Guardar usuario en la base de datos
+        // 🔹 Guardar el usuario
         Usuario nuevoUsuario = usuarioRepository.save(usuario);
         System.out.println("DEBUG: Usuario creado con ID: " + nuevoUsuario.getId());
 
@@ -67,7 +74,7 @@ public class UsuarioService {
         usuarioExistente.setDni(usuarioDetalles.getDni());
         usuarioExistente.setRol(usuarioDetalles.getRol());
 
-        // 🔹 Encriptar la nueva contraseña solo si se proporciona
+        // 🔹 Validar y encriptar la contraseña solo si se ha cambiado
         if (usuarioDetalles.getContrasena() != null && !usuarioDetalles.getContrasena().isEmpty()) {
             usuarioExistente.setContrasena(passwordEncoder.encode(usuarioDetalles.getContrasena()));
         }
