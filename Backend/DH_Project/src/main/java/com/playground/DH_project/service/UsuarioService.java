@@ -20,34 +20,38 @@ public class UsuarioService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private RolUsuarioRepository rolUsuarioRepository;
+
     public List<Usuario> obtenerTodos() {
         return usuarioRepository.findAll();
     }
 
-    @Autowired
-    private RolUsuarioRepository rolUsuarioRepository;
-
     public Usuario crearUsuario(Usuario usuario) {
+        // 🔹 Verificar si el correo ya existe
         if (usuarioRepository.findByCorreo(usuario.getCorreo()).isPresent()) {
             throw new RuntimeException("El correo ya está registrado");
         }
 
+        // 🔹 Verificar que la contraseña no esté vacía
         if (usuario.getContrasena() == null || usuario.getContrasena().isEmpty()) {
             throw new RuntimeException("La contraseña no puede estar vacía");
         }
 
-        // 🛠 Buscar el rol en la base de datos en lugar de recibirlo directamente
+        // 🔹 Asignar el rol de CLIENTE (id = 2)
         RolUsuario rolCliente = rolUsuarioRepository.findById(2)
                 .orElseThrow(() -> new RuntimeException("Rol CLIENTE no encontrado"));
-
         usuario.setRol(rolCliente);
+
+        // 🔹 Encriptar la contraseña antes de guardar
         usuario.setContrasena(passwordEncoder.encode(usuario.getContrasena()));
 
-        return usuarioRepository.save(usuario);
+        // 🔹 Guardar usuario en la base de datos
+        Usuario nuevoUsuario = usuarioRepository.save(usuario);
+        System.out.println("DEBUG: Usuario creado con ID: " + nuevoUsuario.getId());
+
+        return nuevoUsuario;
     }
-
-
-
 
     public Optional<Usuario> buscarPorCorreo(String correo) {
         return usuarioRepository.findByCorreo(correo);
@@ -63,16 +67,22 @@ public class UsuarioService {
         usuarioExistente.setDni(usuarioDetalles.getDni());
         usuarioExistente.setRol(usuarioDetalles.getRol());
 
+        // 🔹 Encriptar la nueva contraseña solo si se proporciona
         if (usuarioDetalles.getContrasena() != null && !usuarioDetalles.getContrasena().isEmpty()) {
             usuarioExistente.setContrasena(passwordEncoder.encode(usuarioDetalles.getContrasena()));
         }
 
-        return usuarioRepository.save(usuarioExistente);
+        Usuario usuarioActualizado = usuarioRepository.save(usuarioExistente);
+        System.out.println("DEBUG: Usuario actualizado con ID: " + usuarioActualizado.getId());
+
+        return usuarioActualizado;
     }
 
     public void eliminarUsuario(Integer id) {
         Usuario usuarioExistente = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
         usuarioRepository.delete(usuarioExistente);
+        System.out.println("DEBUG: Usuario eliminado con ID: " + id);
     }
 }
