@@ -24,7 +24,7 @@ public class UsuarioService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public List<Usuario> obtenerUsuarios() {
+    public List<Usuario> obtenerTodos() {
         return usuarioRepository.findAll();
     }
 
