@@ -4,9 +4,9 @@ import logo from "@assets/logo.svg";
 import Avatar from "@assets/avatarUser.png";
 import UserMenu from "./UserMenu";
 
-const getUserFromLocalStorage = () => {
+const getUserFromSessionStorage = () => {
   try {
-    const userData = localStorage.getItem("user");
+    const userData = sessionStorage.getItem("user");
     return userData ? JSON.parse(userData) : null;
   } catch (error) {
     console.error("Error al analizar los datos del usuario:", error);
@@ -15,27 +15,23 @@ const getUserFromLocalStorage = () => {
 };
 
 const Header = () => {
-  const [user, setUser] = useState(getUserFromLocalStorage);
+  const [user, setUser] = useState(getUserFromSessionStorage);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
+    sessionStorage.removeItem("user");
     setUser(null);
     window.location.href = "/";
   };
 
   useEffect(() => {
-    const syncUserFromStorage = () => setUser(getUserFromLocalStorage());
+    const syncUserFromStorage = () => setUser(getUserFromSessionStorage());
     window.addEventListener("storage", syncUserFromStorage);
     return () => window.removeEventListener("storage", syncUserFromStorage);
   }, []);
 
   useEffect(() => {
-    if (isMenuOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
+    document.body.style.overflow = isMenuOpen ? "hidden" : "auto";
   }, [isMenuOpen]);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
@@ -80,7 +76,7 @@ const Header = () => {
           </div>
 
           <ul className="flex flex-col gap-4 text-lg">
-            {user?.user_metadata?.tipo === 1 && (
+            {user?.user_metadata?.rol?.id === 1 && (
               <>
                 <li>
                   <Link to="/vehicles/register" onClick={toggleMenu}>
@@ -113,7 +109,7 @@ const Header = () => {
       )}
 
       <ul className="hidden md:flex gap-8 items-center text-base text-white">
-        {user?.user_metadata?.tipo === 1 && (
+        {user?.user_metadata?.rol?.id === 1 && (
           <>
             <li>
               <Link to="/vehicles/register">Registrar Vehículo</Link>

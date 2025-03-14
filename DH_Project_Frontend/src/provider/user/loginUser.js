@@ -1,21 +1,27 @@
 import api from "../../../api/api";
 
-export const loginUser = async (email, password) => {
+export const loginUser = async ({ email, password }) => {
   try {
     const { data } = await api.post("/auth/login", {
       correo: email,
       contrasena: password,
     });
 
-    if (!data.jwt) {
-      throw new Error("Error: No se recibió un token.");
-    }
+    sessionStorage.setItem("token", data.jwt);
+    sessionStorage.setItem(
+      "user",
+      JSON.stringify({
+        id: data.id,
+        nombre: data.nombre,
+        apellido: data.apellido,
+        rol: data.rol,
+        correo: data.correo,
+      })
+    );
 
-    localStorage.setItem("token", data.jwt);
-
-    return { success: true, token: data.jwt };
+    return { success: true, token: data.jwt, user: data };
   } catch (error) {
-    console.error("Error al intentar iniciar sesión:", error.response?.data || error.message);
-    throw new Error(error.response?.data || "Error al iniciar sesión.");
+    console.error("Error al iniciar sesión:", error.response?.data || error.message);
+    throw new Error(error.response?.data || "Error desconocido al iniciar sesión.");
   }
 };

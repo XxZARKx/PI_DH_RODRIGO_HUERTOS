@@ -44,6 +44,14 @@ function App() {
             path="/register"
             element={<Register tipo={2} titulo="Registrar Cliente" />}
           />
+          <Route
+            path="/register/admin"
+            element={
+              //   <ProtectedRoute user={user} requiredTipo={1}>
+              <Register tipo={1} titulo="Registrar Empleado" />
+              //   </ProtectedRoute>
+            }
+          />
           {/* <Route path="/vehicles" element={<VehiculosDisponibles />} />
 					<Route path="/politicaPrivacidad" element={<PoliticaPrivacidad />} />
 					<Route
@@ -54,14 +62,7 @@ function App() {
 					<Route path="/reservation/:id" element={<ReservaVehiculo />} />
 					<Route path="/mis-reservas" element={<MisReservas />} />
 
-					<Route
-						path="/register/admin"
-						element={
-							<ProtectedRoute user={user} requiredTipo={1}>
-								<Register tipo={1} titulo="Registrar Empleado" />
-							</ProtectedRoute>
-						}
-					/>
+					
 					<Route
 						path="/vehicles/register"
 						element={

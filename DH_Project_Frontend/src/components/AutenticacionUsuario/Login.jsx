@@ -12,11 +12,14 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await loginUser(email, password);
+      const { token } = await loginUser({ email, password });
 
-      if (response.success) {
-        window.location.href = "/";
-      }
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify({ email }));
+
+      window.dispatchEvent(new Event("storage"));
+
+      window.location.href = "/";
     } catch (error) {
       setErrorMessage(error.message || "Error al iniciar sesión.");
     }

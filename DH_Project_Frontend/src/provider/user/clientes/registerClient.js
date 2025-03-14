@@ -1,10 +1,9 @@
 import { supabase } from "../../../../api/supabaseClient";
 
 export const registerClient = async (clientData) => {
-    const { nombre, apellido, dni, correo, contrasena } = clientData;
+    const { nombre, apellido, dni, correo, contrasena, tipo } = clientData; 
 
     try {
-        // 🔹 Registrar usuario en Supabase Auth (sin usar el ID generado por Supabase)
         const { data, error } = await supabase.auth.signUp({
             email: correo,
             password: contrasena,
@@ -13,7 +12,7 @@ export const registerClient = async (clientData) => {
                     nombre,
                     apellido,
                     dni,
-                    tipo: 2, // Cliente
+                    tipo, 
                 },
             },
         });
@@ -22,15 +21,14 @@ export const registerClient = async (clientData) => {
             throw error;
         }
 
-        // 🔹 Guardar usuario en la tabla "usuario" (dejando que el ID se genere solo)
         const { error: dbError } = await supabase.from("usuario").insert([
             {
                 nombre,
                 apellido,
                 dni,
                 correo,
-                contraseña: contrasena, // 👈 Asegurar que se envía la contraseña
-                tipo: 2, // 👈 Relación con "rol_usuario" (2 = Cliente)
+                contraseña: contrasena,
+                tipo, 
             },
         ]);
 

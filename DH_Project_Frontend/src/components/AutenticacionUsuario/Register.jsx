@@ -27,21 +27,22 @@ const RegisterForm = ({ tipo, titulo }) => {
   };
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.nombre) newErrors.nombre = "El nombre es obligatorio";
-    if (!formData.apellido) newErrors.apellido = "El apellido es obligatorio";
-    if (!formData.dni || formData.dni.length < 8)
-      newErrors.dni = "El DNI debe tener al menos 8 dígitos";
-    if (!formData.correo)
-      newErrors.correo = "El correo electrónico es obligatorio";
+
+    if (!formData.nombre.trim()) newErrors.nombre = "El nombre es obligatorio";
+    if (!formData.apellido.trim())
+      newErrors.apellido = "El apellido es obligatorio";
+    if (!/^\d{8}$/.test(formData.dni))
+      newErrors.dni = "El DNI debe tener 8 dígitos numéricos";
+    if (!formData.correo.trim()) newErrors.correo = "El correo es obligatorio";
     else if (!/\S+@\S+\.\S+/.test(formData.correo))
-      newErrors.correo = "El correo electrónico no es válido";
-    if (!formData.contrasena)
-      newErrors.contrasena = "La contrasena es obligatoria";
-    if (!formData.confirmPassword)
-      newErrors.confirmPassword =
-        "La confirmación de contrasena es obligatoria";
+      newErrors.correo = "Correo no válido";
+    if (!formData.contrasena.trim())
+      newErrors.contrasena = "La contraseña es obligatoria";
+    if (!formData.confirmPassword.trim())
+      newErrors.confirmPassword = "Confirma tu contraseña";
     else if (formData.contrasena !== formData.confirmPassword)
       newErrors.confirmPassword = "Las contraseñas no coinciden";
+
     return newErrors;
   };
   const handleSubmit = async (e) => {
@@ -55,6 +56,7 @@ const RegisterForm = ({ tipo, titulo }) => {
         dni: formData.dni,
         correo: formData.correo,
         contrasena: formData.contrasena,
+        tipo: tipo || "cliente",
       };
 
       const { success, message } = await registerClient(userData);
@@ -218,7 +220,7 @@ const RegisterForm = ({ tipo, titulo }) => {
           </div>
           <button
             type="submit"
-            disabled={isLoading}
+            disabled={isLoading || Object.keys(errors).length > 0}
             className={`w-full p-3 bg-blue-500 text-white font-semibold rounded-lg ${
               isLoading ? "cursor-not-allowed" : "hover:bg-blue-600"
             }`}
