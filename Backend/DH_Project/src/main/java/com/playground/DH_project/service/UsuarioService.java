@@ -49,8 +49,8 @@ public class UsuarioService {
         return usuarioRepository.findByCorreo(correo);
     }
 
-    public Usuario actualizarUsuario(Usuario usuario) {
-        Usuario usuarioExistente = usuarioRepository.findById(usuario.getId())
+    public Usuario actualizarUsuario(Integer id, Usuario usuario) {
+        Usuario usuarioExistente = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         usuarioExistente.setNombre(usuario.getNombre());
@@ -58,10 +58,11 @@ public class UsuarioService {
         usuarioExistente.setCorreo(usuario.getCorreo());
         usuarioExistente.setDni(usuario.getDni());
         usuarioExistente.setRol(usuario.getRol());
-        usuarioExistente.setContrasena(usuario.getContrasena()); // No encripta la contraseña
+        usuarioExistente.setContrasena(usuario.getContrasena());
 
         return usuarioRepository.save(usuarioExistente);
     }
+
 
     public void eliminarUsuario(Integer id) {
         Usuario usuarioExistente = usuarioRepository.findById(id)
