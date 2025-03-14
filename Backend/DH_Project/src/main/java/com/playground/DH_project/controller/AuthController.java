@@ -6,7 +6,6 @@ import com.playground.DH_project.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,31 +21,20 @@ public class AuthController {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest authRequest) {
-        try {
-            // 🔹 Buscar usuario por correo
-            Usuario usuario = usuarioRepository.findByCorreo(authRequest.getCorreo())
-                    .orElseThrow(() -> new UsernameNotFoundException("Credenciales inválidas"));
+        // 🔹 Buscar usuario por correo
+        Usuario usuario = usuarioRepository.findByCorreo(authRequest.getCorreo())
+                .orElseThrow(() -> new UsernameNotFoundException("Credenciales inválidas"));
 
-            // 🔹 Comparar contraseñas usando BCrypt
-            if (!passwordEncoder.matches(authRequest.getContrasena(), usuario.getContrasena())) {
-                throw new BadCredentialsException("Credenciales inválidas");
-            }
-
-            // 🔹 Generar JWT si la autenticación es correcta
-            final String jwt = jwtUtil.generateToken(usuario.getCorreo());
-
-            return ResponseEntity.ok(new AuthResponse(jwt));
-
-        } catch (UsernameNotFoundException | BadCredentialsException e) {
-            return ResponseEntity.status(401).body("Credenciales inválidas");
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error interno del servidor");
+        // 🔹 Comparar contraseñas en texto plano (⚠ INSEGURO)
+        if (!usuario.getContrasena().equals(authRequest.getContrasena())) {
+            throw new BadCredentialsException("Credenciales inválidas");
         }
+
+        // 🔹 Generar JWT si las credenciales son correctas
+        String token = jwtUtil.generateToken(usuario.getCorreo());
+        return ResponseEntity.ok(new AuthResponse(token));
     }
 
     // 🔹 Clases DTO para el request y response
@@ -56,6 +44,7 @@ public class AuthController {
 
         public String getCorreo() { return correo; }
         public void setCorreo(String correo) { this.correo = correo; }
+
         public String getContrasena() { return contrasena; }
         public void setContrasena(String contrasena) { this.contrasena = contrasena; }
     }

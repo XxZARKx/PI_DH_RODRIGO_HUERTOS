@@ -14,7 +14,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        // OMITIR AUTENTICACIÓN: Deja que todas las solicitudes pasen directamente
         filterChain.doFilter(request, response);
     }
 }
