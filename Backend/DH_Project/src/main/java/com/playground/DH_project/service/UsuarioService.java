@@ -33,17 +33,20 @@ public class UsuarioService {
             throw new RuntimeException("La contraseña no puede estar vacía");
         }
 
-        RolUsuario rolCliente = rolUsuarioRepository.findById(2)
-                .orElseThrow(() -> new RuntimeException("Rol CLIENTE no encontrado"));
-        usuario.setRol(rolCliente);
+        // Verifica si ya tiene un rol asignado, si no, asigna CLIENTE por defecto
+        if (usuario.getRol() == null) {
+            RolUsuario rolCliente = rolUsuarioRepository.findById(2)
+                    .orElseThrow(() -> new RuntimeException("Rol CLIENTE no encontrado"));
+            usuario.setRol(rolCliente);
+        }
 
         usuario.setContrasena(usuario.getContrasena());
 
         Usuario nuevoUsuario = usuarioRepository.save(usuario);
-        System.out.println("DEBUG: Usuario creado con ID: " + nuevoUsuario.getId());
 
         return nuevoUsuario;
     }
+
 
     public Optional<Usuario> buscarUsuarioPorCorreo(String correo) {
         return usuarioRepository.findByCorreo(correo);
