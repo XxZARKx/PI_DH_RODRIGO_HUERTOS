@@ -54,4 +54,9 @@ public class VehiculoService {
                 .orElseThrow(() -> new RuntimeException("Vehículo no encontrado"));
         vehiculoRepository.delete(vehiculoExistente);
     }
+
+    public Optional<Vehiculo> obtenerPorId(Integer id) {
+        return vehiculoRepository.findById(id);
+    }
+
 }

@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/vehiculos")
@@ -42,4 +43,12 @@ public class VehiculoController {
         vehiculoService.eliminarVehiculo(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Vehiculo> obtenerVehiculoPorId(@PathVariable Integer id) {
+        Optional<Vehiculo> vehiculo = vehiculoService.obtenerPorId(id);
+        return vehiculo.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
+
 }
