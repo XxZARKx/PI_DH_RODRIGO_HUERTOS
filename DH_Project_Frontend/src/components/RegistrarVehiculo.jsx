@@ -4,13 +4,13 @@ import Footer from "./Footer";
 import CreateVehicleForm from "./CreateVehiculo";
 
 const RegistrarVehiculo = () => {
-  // return (
-  // 	<div className="w-max-screen">
-  // 		<Header />
-  // 		<CreateVehicleForm />
-  // 		<Footer />
-  // 	</div>
-  // );
+  return (
+    <div className="w-max-screen">
+      <Header />
+      <CreateVehicleForm />
+      <Footer />
+    </div>
+  );
 };
 
 export default RegistrarVehiculo;

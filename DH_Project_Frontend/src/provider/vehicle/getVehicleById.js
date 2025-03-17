@@ -2,7 +2,7 @@ import api from "../../../api/api";
 
 export const getVehicleById = async (id) => {
 	try {
-		const { data, error } = await api.get(`/vehiculo/${id}`);
+		const { data, error } = await api.get(`/vehiculos/${id}`);
 
 		if (error) {
 			throw new Error(error.message);

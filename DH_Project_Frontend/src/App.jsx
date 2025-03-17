@@ -5,16 +5,16 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Register from "./components/AutenticacionUsuario/Register";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-// import RegistrarVehiculo from "./components/RegistrarVehiculo";
-// import VehiculosDisponibles from "./components/VehiculosDisponibles";
-// import DetallesVehiculo from "./components/DetallesVehiculo";
+import RegistrarVehiculo from "./components/RegistrarVehiculo";
+import VehiculosDisponibles from "./components/VehiculosDisponibles";
+import DetallesVehiculo from "./components/DetallesVehiculo";
 // import PanelAdmin from "./components/PanelAdmin";
 // import ProtectedRoute from "./components/ProtectedRoute";
 // import AccessDenied from "./components/AccessDenied";
 // import ReservaVehiculo from "./components/ReservaVehiculo";
 // import MisReservas from "./components/UserReservas";
-// import PoliticaPrivacidad from "./components/PoliticaPrivacidad";
-// import TerminosYCondiciones from "./components/TerminosYCondiciones";
+import PoliticaPrivacidad from "./components/PoliticaPrivacidad";
+import TerminosYCondiciones from "./components/TerminosYCondiciones";
 
 // const getUserFromLocalStorage = () => {
 //   try {
@@ -52,25 +52,27 @@ function App() {
               //   </ProtectedRoute>
             }
           />
-          {/* <Route path="/vehicles" element={<VehiculosDisponibles />} />
-					<Route path="/politicaPrivacidad" element={<PoliticaPrivacidad />} />
-					<Route
-						path="/terminosYcondiciones"
-						element={<TerminosYCondiciones />}
-					/>
-					<Route path="/vehicles/:id" element={<DetallesVehiculo />} />
-					<Route path="/reservation/:id" element={<ReservaVehiculo />} />
-					<Route path="/mis-reservas" element={<MisReservas />} />
+          <Route path="/vehicles" element={<VehiculosDisponibles />} />
+          <Route path="/politicaPrivacidad" element={<PoliticaPrivacidad />} />
+          <Route
+            path="/terminosYcondiciones"
+            element={<TerminosYCondiciones />}
+          />
 
+          <Route path="/vehicles/:id" element={<DetallesVehiculo />} />
+          {/* <Route path="/reservation/:id" element={<ReservaVehiculo />} /> */}
+          {/* <Route path="/mis-reservas" element={<MisReservas />} /> */}
+
+          <Route
+            path="/vehicles/register"
+            element={
+              // <ProtectedRoute user={user} requiredTipo={1}>
+              <RegistrarVehiculo />
+              // </ProtectedRoute>
+            }
+          />
+          {/* 
 					
-					<Route
-						path="/vehicles/register"
-						element={
-							<ProtectedRoute user={user} requiredTipo={1}>
-								<RegistrarVehiculo />
-							</ProtectedRoute>
-						}
-					/>
 					<Route
 						path="/admin/panel"
 						element={

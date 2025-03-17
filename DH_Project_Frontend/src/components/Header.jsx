@@ -36,6 +36,8 @@ const Header = () => {
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
+  console.log("mostrando info del usuario: ", user);
+
   return (
     <div className="px-4 md:px-10 py-2 flex items-center justify-between max-w-full w-full min-h-[10%] bg-[#9C9C9C]">
       <Link to="/">
@@ -64,7 +66,7 @@ const Header = () => {
                   <img src={Avatar} className="rounded-full" />
                 </div>
                 <span className="font-semibold">
-                  {user.user_metadata.nombre} {user.user_metadata.apellido}
+                  {user?.nombre} {user?.apellido}
                 </span>
               </div>
             ) : (
@@ -76,7 +78,7 @@ const Header = () => {
           </div>
 
           <ul className="flex flex-col gap-4 text-lg">
-            {user?.user_metadata?.rol?.id === 1 && (
+            {user?.rol?.id === 1 && (
               <>
                 <li>
                   <Link to="/vehicles/register" onClick={toggleMenu}>
@@ -96,11 +98,7 @@ const Header = () => {
               </Link>
             </li>
             {user ? (
-              <UserMenu
-                user={user.user_metadata}
-                onLogout={handleLogout}
-                isMobile
-              />
+              <UserMenu user={user} onLogout={handleLogout} isMobile />
             ) : (
               <UserMenu user={null} onLogout={handleLogout} isMobile />
             )}
@@ -109,7 +107,7 @@ const Header = () => {
       )}
 
       <ul className="hidden md:flex gap-8 items-center text-base text-white">
-        {user?.user_metadata?.rol?.id === 1 && (
+        {user?.rol?.id === 1 && (
           <>
             <li>
               <Link to="/vehicles/register">Registrar Vehículo</Link>
@@ -132,7 +130,7 @@ const Header = () => {
             </li>
           </>
         ) : (
-          <UserMenu user={user.user_metadata} onLogout={handleLogout} />
+          <UserMenu user={user} onLogout={handleLogout} />
         )}
       </ul>
     </div>
