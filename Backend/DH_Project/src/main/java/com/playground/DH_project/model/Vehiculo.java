@@ -2,6 +2,8 @@ package com.playground.DH_project.model;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
+import java.util.Set;
+import java.util.HashSet;
 
 @Entity
 @Table(name = "vehiculo")
@@ -37,10 +39,14 @@ public class Vehiculo {
     @Column(name = "imagen_url")
     private String imagenUrl;
 
-    // Relación ManyToOne con Categoria
-    @ManyToOne
-    @JoinColumn(name = "categoria_id", nullable = false)
-    private Categoria categoria;
+    // Relación ManyToMany unidireccional con Categoria
+    @ManyToMany
+    @JoinTable(
+            name = "vehiculo_categoria",
+            joinColumns = @JoinColumn(name = "vehiculo_id"),
+            inverseJoinColumns = @JoinColumn(name = "categoria_id")
+    )
+    private Set<Categoria> categorias = new HashSet<>();
 
     // Getters y Setters
     public Integer getId() {
@@ -123,11 +129,11 @@ public class Vehiculo {
         this.imagenUrl = imagenUrl;
     }
 
-    public Categoria getCategoria() {
-        return categoria;
+    public Set<Categoria> getCategorias() {
+        return categorias;
     }
 
-    public void setCategoria(Categoria categoria) {
-        this.categoria = categoria;
+    public void setCategorias(Set<Categoria> categorias) {
+        this.categorias = categorias;
     }
 }

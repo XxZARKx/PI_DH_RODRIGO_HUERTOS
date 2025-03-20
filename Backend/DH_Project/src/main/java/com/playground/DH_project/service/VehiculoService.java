@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.HashSet;
 
 @Service
 public class VehiculoService {
@@ -32,10 +34,14 @@ public class VehiculoService {
             throw new RuntimeException("Ya existe un vehículo con esa matrícula");
         }
 
-        // Validar que la categoría exista
-        Categoria categoria = categoriaRepository.findById(vehiculo.getCategoria().getId())
-                .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
-        vehiculo.setCategoria(categoria);
+        // Validar y asignar las categorías
+        Set<Categoria> categorias = new HashSet<>();
+        for (Categoria categoria : vehiculo.getCategorias()) {
+            Categoria categoriaExistente = categoriaRepository.findById(categoria.getId())
+                    .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
+            categorias.add(categoriaExistente);
+        }
+        vehiculo.setCategorias(categorias);
 
         return vehiculoRepository.save(vehiculo);
     }
@@ -55,10 +61,14 @@ public class VehiculoService {
         vehiculoExistente.setPrecio(vehiculoDetalles.getPrecio());
         vehiculoExistente.setImagenUrl(vehiculoDetalles.getImagenUrl());
 
-        // Validar que la categoría exista
-        Categoria categoria = categoriaRepository.findById(vehiculoDetalles.getCategoria().getId())
-                .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
-        vehiculoExistente.setCategoria(categoria);
+        // Validar y asignar las categorías
+        Set<Categoria> categorias = new HashSet<>();
+        for (Categoria categoria : vehiculoDetalles.getCategorias()) {
+            Categoria categoriaExistente = categoriaRepository.findById(categoria.getId())
+                    .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
+            categorias.add(categoriaExistente);
+        }
+        vehiculoExistente.setCategorias(categorias);
 
         return vehiculoRepository.save(vehiculoExistente);
     }
