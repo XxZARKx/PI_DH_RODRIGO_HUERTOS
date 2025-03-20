@@ -41,7 +41,7 @@ public class VehiculoService {
         vehiculoExistente.setCantidadPersonas(vehiculoDetalles.getCantidadPersonas());
         vehiculoExistente.setPuertas(vehiculoDetalles.getPuertas());
         vehiculoExistente.setEquipaje(vehiculoDetalles.getEquipaje());
-        vehiculoExistente.setCategoria(vehiculoDetalles.getCategoria());
+        vehiculoExistente.setCategorias(vehiculoDetalles.getCategorias());
         vehiculoExistente.setPrecio(vehiculoDetalles.getPrecio());
         vehiculoExistente.setImagenUrl(vehiculoDetalles.getImagenUrl());
 

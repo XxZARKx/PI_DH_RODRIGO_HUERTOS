@@ -9,6 +9,4 @@ import java.util.Optional;
 public interface VehiculoRepository extends JpaRepository<Vehiculo, Integer> {
     Optional<Vehiculo> findByMatricula(String matricula);
     List<Vehiculo> findByEstado(String estado);
-
 }
-

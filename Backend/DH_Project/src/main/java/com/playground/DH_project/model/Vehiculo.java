@@ -1,8 +1,9 @@
 package com.playground.DH_project.model;
 
 import jakarta.persistence.*;
-
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "vehiculo")
@@ -32,14 +33,19 @@ public class Vehiculo {
     @Column(nullable = false)
     private Integer equipaje = 2;
 
-    @Column(length = 1, nullable = false)
-    private String categoria = "A";
-
     @Column(nullable = false)
     private BigDecimal precio;
 
     @Column(name = "imagen_url")
     private String imagenUrl;
+
+    @ManyToMany
+    @JoinTable(
+            name = "vehiculo_categoria",
+            joinColumns = @JoinColumn(name = "vehiculo_id"),
+            inverseJoinColumns = @JoinColumn(name = "categoria_id")
+    )
+    private Set<Categoria> categorias = new HashSet<>();
 
     public Integer getId() {
         return id;
@@ -105,14 +111,6 @@ public class Vehiculo {
         this.equipaje = equipaje;
     }
 
-    public String getCategoria() {
-        return categoria;
-    }
-
-    public void setCategoria(String categoria) {
-        this.categoria = categoria;
-    }
-
     public BigDecimal getPrecio() {
         return precio;
     }
@@ -127,5 +125,13 @@ public class Vehiculo {
 
     public void setImagenUrl(String imagenUrl) {
         this.imagenUrl = imagenUrl;
+    }
+
+    public Set<Categoria> getCategorias() {
+        return categorias;
+    }
+
+    public void setCategorias(Set<Categoria> categorias) {
+        this.categorias = categorias;
     }
 }
