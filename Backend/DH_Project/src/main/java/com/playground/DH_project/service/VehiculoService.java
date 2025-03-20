@@ -1,18 +1,25 @@
 package com.playground.DH_project.service;
 
+import com.playground.DH_project.model.Categoria;
 import com.playground.DH_project.model.Vehiculo;
 import com.playground.DH_project.repository.VehiculoRepository;
+import com.playground.DH_project.repository.CategoriaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.HashSet;
 
 @Service
 public class VehiculoService {
 
     @Autowired
     private VehiculoRepository vehiculoRepository;
+
+    @Autowired
+    private CategoriaRepository categoriaRepository;
 
     // Lista todos los vehículos
     public List<Vehiculo> obtenerTodos() {
@@ -26,6 +33,13 @@ public class VehiculoService {
         if (existente.isPresent()) {
             throw new RuntimeException("Ya existe un vehículo con esa matrícula");
         }
+
+        // Buscar las categorías por sus IDs y asignarlas al vehículo
+        Set<Categoria> categorias = new HashSet<>(categoriaRepository.findAllById(
+                vehiculo.getCategorias().stream().map(Categoria::getId).toList()
+        ));
+        vehiculo.setCategorias(categorias);
+
         return vehiculoRepository.save(vehiculo);
     }
 
@@ -41,9 +55,14 @@ public class VehiculoService {
         vehiculoExistente.setCantidadPersonas(vehiculoDetalles.getCantidadPersonas());
         vehiculoExistente.setPuertas(vehiculoDetalles.getPuertas());
         vehiculoExistente.setEquipaje(vehiculoDetalles.getEquipaje());
-        vehiculoExistente.setCategorias(vehiculoDetalles.getCategorias());
         vehiculoExistente.setPrecio(vehiculoDetalles.getPrecio());
         vehiculoExistente.setImagenUrl(vehiculoDetalles.getImagenUrl());
+
+        // Buscar las categorías por sus IDs y asignarlas al vehículo
+        Set<Categoria> categorias = new HashSet<>(categoriaRepository.findAllById(
+                vehiculoDetalles.getCategorias().stream().map(Categoria::getId).toList()
+        ));
+        vehiculoExistente.setCategorias(categorias);
 
         return vehiculoRepository.save(vehiculoExistente);
     }
@@ -58,5 +77,4 @@ public class VehiculoService {
     public Optional<Vehiculo> obtenerPorId(Integer id) {
         return vehiculoRepository.findById(id);
     }
-
 }

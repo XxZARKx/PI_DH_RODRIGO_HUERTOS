@@ -50,5 +50,4 @@ public class VehiculoController {
         return vehiculo.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
-
 }

@@ -47,6 +47,7 @@ public class Vehiculo {
     )
     private Set<Categoria> categorias = new HashSet<>();
 
+    // Getters y Setters
     public Integer getId() {
         return id;
     }
