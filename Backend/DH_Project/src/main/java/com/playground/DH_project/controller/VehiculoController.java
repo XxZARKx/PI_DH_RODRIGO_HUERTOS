@@ -1,5 +1,6 @@
 package com.playground.DH_project.controller;
 
+import com.playground.DH_project.dto.VehiculoDTO;
 import com.playground.DH_project.model.Vehiculo;
 import com.playground.DH_project.service.VehiculoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,9 +46,9 @@ public class VehiculoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Vehiculo> obtenerVehiculoPorId(@PathVariable Integer id) {
+    public ResponseEntity<VehiculoDTO> obtenerVehiculoPorId(@PathVariable Integer id) {
         Optional<Vehiculo> vehiculo = vehiculoService.obtenerPorId(id);
-        return vehiculo.map(ResponseEntity::ok)
+        return vehiculo.map(v -> ResponseEntity.ok(vehiculoService.convertirAVehiculoDTO(v)))
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 }

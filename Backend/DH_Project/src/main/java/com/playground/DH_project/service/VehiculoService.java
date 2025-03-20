@@ -1,5 +1,6 @@
 package com.playground.DH_project.service;
 
+import com.playground.DH_project.dto.VehiculoDTO;
 import com.playground.DH_project.model.Categoria;
 import com.playground.DH_project.model.Vehiculo;
 import com.playground.DH_project.repository.VehiculoRepository;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.HashSet;
+import java.util.stream.Collectors;
 
 @Service
 public class VehiculoService {
@@ -82,5 +84,27 @@ public class VehiculoService {
 
     public Optional<Vehiculo> obtenerPorId(Integer id) {
         return vehiculoRepository.findById(id);
+    }
+
+    public VehiculoDTO convertirAVehiculoDTO(Vehiculo vehiculo) {
+        VehiculoDTO dto = new VehiculoDTO();
+        dto.setId(vehiculo.getId());
+        dto.setMarca(vehiculo.getMarca());
+        dto.setModelo(vehiculo.getModelo());
+        dto.setMatricula(vehiculo.getMatricula());
+        dto.setEstado(vehiculo.getEstado());
+        dto.setCantidadPersonas(vehiculo.getCantidadPersonas());
+        dto.setPuertas(vehiculo.getPuertas());
+        dto.setEquipaje(vehiculo.getEquipaje());
+        dto.setPrecio(vehiculo.getPrecio());
+        dto.setImagenUrl(vehiculo.getImagenUrl());
+
+        // Obtener las categorías como un array de IDs
+        Set<Integer> categoriaIds = vehiculo.getCategorias().stream()
+                .map(Categoria::getId)
+                .collect(Collectors.toSet());
+        dto.setCategoriaIds(categoriaIds);
+
+        return dto;
     }
 }
