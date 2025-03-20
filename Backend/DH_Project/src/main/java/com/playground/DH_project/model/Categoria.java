@@ -12,6 +12,9 @@ public class Categoria {
     @Column(length = 50, nullable = false, unique = true)
     private String nombre;
 
+    @Column(name = "icono_class", length = 50)
+    private String iconoClass; // Nuevo campo para el icono
+
     // Getters y Setters
     public Integer getId() {
         return id;
@@ -27,5 +30,13 @@ public class Categoria {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    public String getIconoClass() {
+        return iconoClass;
+    }
+
+    public void setIconoClass(String iconoClass) {
+        this.iconoClass = iconoClass;
     }
 }
