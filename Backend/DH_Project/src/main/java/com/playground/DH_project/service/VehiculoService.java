@@ -35,9 +35,12 @@ public class VehiculoService {
         }
 
         // Buscar las categorías por sus IDs y asignarlas al vehículo
-        Set<Categoria> categorias = new HashSet<>(categoriaRepository.findAllById(
-                vehiculo.getCategorias().stream().map(Categoria::getId).toList()
-        ));
+        Set<Categoria> categorias = new HashSet<>();
+        for (Categoria categoria : vehiculo.getCategorias()) {
+            Categoria categoriaExistente = categoriaRepository.findById(categoria.getId())
+                    .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
+            categorias.add(categoriaExistente);
+        }
         vehiculo.setCategorias(categorias);
 
         return vehiculoRepository.save(vehiculo);
