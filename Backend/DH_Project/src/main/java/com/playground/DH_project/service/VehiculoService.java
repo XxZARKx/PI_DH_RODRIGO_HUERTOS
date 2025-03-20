@@ -9,8 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.HashSet;
 
 @Service
 public class VehiculoService {
@@ -28,20 +26,16 @@ public class VehiculoService {
 
     // Crea un nuevo vehículo
     public Vehiculo crearVehiculo(Vehiculo vehiculo) {
-        // Opcional: Validar que la matrícula no exista ya
+        // Validar que la matrícula no exista ya
         Optional<Vehiculo> existente = vehiculoRepository.findByMatricula(vehiculo.getMatricula());
         if (existente.isPresent()) {
             throw new RuntimeException("Ya existe un vehículo con esa matrícula");
         }
 
-        // Buscar las categorías por sus IDs y asignarlas al vehículo
-        Set<Categoria> categorias = new HashSet<>();
-        for (Categoria categoria : vehiculo.getCategorias()) {
-            Categoria categoriaExistente = categoriaRepository.findById(categoria.getId())
-                    .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
-            categorias.add(categoriaExistente);
-        }
-        vehiculo.setCategorias(categorias);
+        // Validar que la categoría exista
+        Categoria categoria = categoriaRepository.findById(vehiculo.getCategoria().getId())
+                .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
+        vehiculo.setCategoria(categoria);
 
         return vehiculoRepository.save(vehiculo);
     }
@@ -61,11 +55,10 @@ public class VehiculoService {
         vehiculoExistente.setPrecio(vehiculoDetalles.getPrecio());
         vehiculoExistente.setImagenUrl(vehiculoDetalles.getImagenUrl());
 
-        // Buscar las categorías por sus IDs y asignarlas al vehículo
-        Set<Categoria> categorias = new HashSet<>(categoriaRepository.findAllById(
-                vehiculoDetalles.getCategorias().stream().map(Categoria::getId).toList()
-        ));
-        vehiculoExistente.setCategorias(categorias);
+        // Validar que la categoría exista
+        Categoria categoria = categoriaRepository.findById(vehiculoDetalles.getCategoria().getId())
+                .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
+        vehiculoExistente.setCategoria(categoria);
 
         return vehiculoRepository.save(vehiculoExistente);
     }

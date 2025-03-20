@@ -12,6 +12,7 @@ public class Categoria {
     @Column(length = 50, nullable = false, unique = true)
     private String nombre;
 
+    // Getters y Setters
     public Integer getId() {
         return id;
     }
@@ -27,5 +28,4 @@ public class Categoria {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
-
 }
