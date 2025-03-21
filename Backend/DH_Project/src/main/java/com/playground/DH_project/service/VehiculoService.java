@@ -26,7 +26,7 @@ public class VehiculoService {
 
     // Lista todos los vehículos
     public List<Vehiculo> obtenerTodos() {
-        return vehiculoRepository.findAll();
+        return vehiculoRepository.findAll(); // Usa el repositorio directamente
     }
 
     // Crea un nuevo vehículo
