@@ -4,8 +4,10 @@ import com.playground.DH_project.model.RolUsuario;
 import com.playground.DH_project.model.Usuario;
 import com.playground.DH_project.repository.UsuarioRepository;
 import com.playground.DH_project.util.JwtUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 
 @RestController
 @RequestMapping("/api/auth")
@@ -32,6 +34,40 @@ public class AuthController {
 
         return ResponseEntity.ok(new AuthResponse(token, usuario.getId(), usuario.getNombre(),
                 usuario.getApellido(), usuario.getCorreo(), usuario.getRol()));
+    }
+
+    // Nuevo endpoint para obtener el usuario autenticado
+    @GetMapping("/user")
+    public ResponseEntity<?> getAuthenticatedUser(HttpServletRequest request) {
+        // Extraer el token JWT del encabezado de autorización
+        String authorizationHeader = request.getHeader("Authorization");
+
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(401).body("Token no proporcionado o inválido");
+        }
+
+        String token = authorizationHeader.substring(7); // Quitar "Bearer " del token
+
+        // Validar el token y extraer el correo del usuario
+        String correo = jwtUtil.extractUsername(token);
+
+        if (correo == null || !jwtUtil.isTokenValid(token, correo)) {
+            return ResponseEntity.status(401).body("Token inválido o expirado");
+        }
+
+        // Buscar el usuario por su correo
+        Usuario usuario = usuarioRepository.findByCorreo(correo)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        // Devolver los datos del usuario
+        return ResponseEntity.ok(new AuthResponse(
+                token,
+                usuario.getId(),
+                usuario.getNombre(),
+                usuario.getApellido(),
+                usuario.getCorreo(),
+                usuario.getRol()
+        ));
     }
 
     public static class AuthRequest {
