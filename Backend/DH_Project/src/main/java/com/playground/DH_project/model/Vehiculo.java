@@ -2,6 +2,7 @@ package com.playground.DH_project.model;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.HashSet;
 
@@ -47,6 +48,12 @@ public class Vehiculo {
             inverseJoinColumns = @JoinColumn(name = "categoria_id")
     )
     private Set<Categoria> categorias = new HashSet<>();
+
+    @Column(name = "fecha_inicio_reserva", nullable = true)
+    private LocalDateTime fechaInicioReserva;
+
+    @Column(name = "fecha_fin_reserva", nullable = true)
+    private LocalDateTime fechaFinReserva;
 
     // Getters y Setters
     public Integer getId() {
@@ -135,5 +142,21 @@ public class Vehiculo {
 
     public void setCategorias(Set<Categoria> categorias) {
         this.categorias = categorias;
+    }
+
+    public LocalDateTime getFechaInicioReserva() {
+        return fechaInicioReserva;
+    }
+
+    public void setFechaInicioReserva(LocalDateTime fechaInicioReserva) {
+        this.fechaInicioReserva = fechaInicioReserva;
+    }
+
+    public LocalDateTime getFechaFinReserva() {
+        return fechaFinReserva;
+    }
+
+    public void setFechaFinReserva(LocalDateTime fechaFinReserva) {
+        this.fechaFinReserva = fechaFinReserva;
     }
 }

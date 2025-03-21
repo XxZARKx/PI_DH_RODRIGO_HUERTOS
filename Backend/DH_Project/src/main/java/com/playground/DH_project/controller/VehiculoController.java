@@ -8,7 +8,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -50,5 +53,36 @@ public class VehiculoController {
         Optional<Vehiculo> vehiculo = vehiculoService.obtenerPorId(id);
         return vehiculo.map(v -> ResponseEntity.ok(vehiculoService.convertirAVehiculoDTO(v)))
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
+
+    @PostMapping("/{id}/reservar")
+    public ResponseEntity<Vehiculo> reservarVehiculo(@PathVariable Integer id, @RequestBody Map<String, String> request) {
+        try {
+            LocalDateTime fechaInicio = LocalDateTime.parse(request.get("fechaInicio"));
+            LocalDateTime fechaFin = LocalDateTime.parse(request.get("fechaFin"));
+
+            Vehiculo vehiculoReservado = vehiculoService.reservarVehiculo(id, fechaInicio, fechaFin);
+            return new ResponseEntity<>(vehiculoReservado, HttpStatus.OK);
+        } catch (DateTimeParseException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/disponibles")
+    public ResponseEntity<List<Vehiculo>> obtenerVehiculosDisponibles(
+            @RequestParam String fechaInicio,
+            @RequestParam String fechaFin) {
+        try {
+            // Parsear las fechas desde String a LocalDateTime
+            LocalDateTime inicio = LocalDateTime.parse(fechaInicio);
+            LocalDateTime fin = LocalDateTime.parse(fechaFin);
+
+            // Obtener los vehículos disponibles
+            List<Vehiculo> vehiculosDisponibles = vehiculoService.obtenerVehiculosDisponibles(inicio, fin);
+            return new ResponseEntity<>(vehiculosDisponibles, HttpStatus.OK);
+        } catch (DateTimeParseException e) {
+            // Manejar errores de formato de fecha
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 }

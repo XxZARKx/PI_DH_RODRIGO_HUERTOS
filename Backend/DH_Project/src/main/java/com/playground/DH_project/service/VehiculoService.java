@@ -8,6 +8,7 @@ import com.playground.DH_project.repository.CategoriaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -106,5 +107,26 @@ public class VehiculoService {
         dto.setCategoriaIds(categoriaIds);
 
         return dto;
+    }
+
+    public Vehiculo reservarVehiculo(Integer id, LocalDateTime fechaInicio, LocalDateTime fechaFin) {
+        Vehiculo vehiculo = vehiculoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Vehículo no encontrado"));
+
+        // Validar que el vehículo no esté reservado en el rango de fechas solicitado
+        if (vehiculo.getEstado().equals("Reservado") &&
+                !(fechaInicio.isAfter(vehiculo.getFechaFinReserva()) || fechaFin.isBefore(vehiculo.getFechaInicioReserva()))) {
+            throw new RuntimeException("El vehículo ya está reservado en ese rango de fechas");
+        }
+
+        vehiculo.setEstado("Reservado");
+        vehiculo.setFechaInicioReserva(fechaInicio);
+        vehiculo.setFechaFinReserva(fechaFin);
+
+        return vehiculoRepository.save(vehiculo);
+    }
+
+    public List<Vehiculo> obtenerVehiculosDisponibles(LocalDateTime fechaInicio, LocalDateTime fechaFin) {
+        return vehiculoRepository.findVehiculosDisponibles(fechaInicio, fechaFin);
     }
 }
