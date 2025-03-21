@@ -47,7 +47,6 @@ public class Vehiculo {
             joinColumns = @JoinColumn(name = "vehiculo_id"),
             inverseJoinColumns = @JoinColumn(name = "categoria_id")
     )
-    @JsonIgnore
     private Set<Categoria> categorias = new HashSet<>();
 
     @Column(name = "fecha_inicio_reserva", nullable = true)
