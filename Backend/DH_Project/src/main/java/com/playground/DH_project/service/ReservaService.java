@@ -40,6 +40,12 @@ public class ReservaService {
     }
 
     public Reserva crearReserva(Reserva reserva) {
+        // Establecer la fecha de reserva realizada con la fecha y hora actuales
+        if (reserva.getFechaReservaRealizada() == null) {
+            reserva.setFechaReservaRealizada(OffsetDateTime.now());
+        }
+
+        // Validar y asignar el vehículo
         if (reserva.getVehiculo() != null && reserva.getVehiculo().getId() != null) {
             Vehiculo vehiculo = vehiculoRepository.findById(reserva.getVehiculo().getId())
                     .orElseThrow(() -> new RuntimeException("Vehículo no encontrado"));
@@ -51,21 +57,31 @@ public class ReservaService {
             throw new RuntimeException("El vehículo es obligatorio para la reserva");
         }
 
+        // Validar y asignar el usuario
         if (reserva.getUsuario() != null && reserva.getUsuario().getId() != null) {
             Usuario usuario = usuarioRepository.findById(reserva.getUsuario().getId())
                     .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
             reserva.setUsuario(usuario);
         }
 
+        // Validar y asignar la sucursal
         if (reserva.getSucursal() != null && reserva.getSucursal().getId() != null) {
             Sucursal sucursal = sucursalRepository.findById(reserva.getSucursal().getId())
                     .orElseThrow(() -> new RuntimeException("Sucursal no encontrada"));
             reserva.setSucursal(sucursal);
         }
 
+        // Establecer la fecha de reserva si no se proporciona
         if (reserva.getFechaReserva() == null) {
             reserva.setFechaReserva(OffsetDateTime.now());
         }
+
+        // Validar la fecha de devolución
+        if (reserva.getFechaDevolucion() == null) {
+            throw new RuntimeException("La fecha de devolución es obligatoria");
+        }
+
+        // Guardar la reserva en la base de datos
         return reservaRepository.save(reserva);
     }
 
