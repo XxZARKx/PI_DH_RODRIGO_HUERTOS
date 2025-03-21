@@ -1,5 +1,6 @@
 package com.playground.DH_project.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -40,13 +41,13 @@ public class Vehiculo {
     @Column(name = "imagen_url")
     private String imagenUrl;
 
-    // Relación ManyToMany unidireccional con Categoria
     @ManyToMany
     @JoinTable(
             name = "vehiculo_categoria",
             joinColumns = @JoinColumn(name = "vehiculo_id"),
             inverseJoinColumns = @JoinColumn(name = "categoria_id")
     )
+    @JsonIgnore
     private Set<Categoria> categorias = new HashSet<>();
 
     @Column(name = "fecha_inicio_reserva", nullable = true)
