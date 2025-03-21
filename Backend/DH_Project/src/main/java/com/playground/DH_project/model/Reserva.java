@@ -38,7 +38,7 @@ public class Reserva {
     @Column(name = "fecha_devolucion", nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE DEFAULT (now() AT TIME ZONE 'America/Lima')")
     private OffsetDateTime fechaDevolucion;
 
-    @Column(name = "fecha_reserva_realizada", nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE DEFAULT (now() AT TIME ZONE 'America/Lima')")
+    @Column(name = "fecha_reserva_realizada", nullable = true, columnDefinition = "TIMESTAMP WITH TIME ZONE DEFAULT (now() AT TIME ZONE 'America/Lima')")
     private OffsetDateTime fechaReservaRealizada;
 
     // Getters y Setters
