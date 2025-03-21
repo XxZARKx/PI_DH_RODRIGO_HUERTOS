@@ -5,6 +5,7 @@ import com.playground.DH_project.model.Categoria;
 import com.playground.DH_project.model.Vehiculo;
 import com.playground.DH_project.repository.VehiculoRepository;
 import com.playground.DH_project.repository.CategoriaRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +31,7 @@ public class VehiculoService {
     }
 
     // Crea un nuevo vehículo
+    @Transactional
     public Vehiculo crearVehiculo(Vehiculo vehiculo) {
         // Validar que la matrícula no exista ya
         Optional<Vehiculo> existente = vehiculoRepository.findByMatricula(vehiculo.getMatricula());
