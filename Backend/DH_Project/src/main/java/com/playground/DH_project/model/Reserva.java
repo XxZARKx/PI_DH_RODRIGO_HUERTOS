@@ -12,7 +12,7 @@ public class Reserva {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "usuario_id")
+    @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
 
     @ManyToOne
@@ -29,16 +29,16 @@ public class Reserva {
     private OffsetDateTime fechaReserva;
 
     @ManyToOne
-    @JoinColumn(name = "sucursal_id", nullable = true)
+    @JoinColumn(name = "sucursal_id", nullable = false)
     private Sucursal sucursal;
 
     @Column(nullable = true, columnDefinition = "TEXT DEFAULT 'Activa'")
     private String estado;
 
-    @Column(name = "fecha_devolucion", nullable = true, columnDefinition = "TIMESTAMP WITH TIME ZONE DEFAULT (now() AT TIME ZONE 'America/Lima')")
+    @Column(name = "fecha_devolucion", nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE DEFAULT (now() AT TIME ZONE 'America/Lima')")
     private OffsetDateTime fechaDevolucion;
 
-    @Column(name = "fecha_reserva_realizada", nullable = true, columnDefinition = "TIMESTAMP WITH TIME ZONE DEFAULT (now() AT TIME ZONE 'America/Lima')")
+    @Column(name = "fecha_reserva_realizada", nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE DEFAULT (now() AT TIME ZONE 'America/Lima')")
     private OffsetDateTime fechaReservaRealizada;
 
     // Getters y Setters
