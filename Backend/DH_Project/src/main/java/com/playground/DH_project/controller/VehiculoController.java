@@ -29,10 +29,9 @@ public class VehiculoController {
 
     // Crear un nuevo vehículo
     @PostMapping
-    public ResponseEntity<VehiculoDTO> crearVehiculo(@RequestBody Vehiculo vehiculo) {
+    public ResponseEntity<Vehiculo> crearVehiculo(@RequestBody Vehiculo vehiculo) {
         Vehiculo nuevoVehiculo = vehiculoService.crearVehiculo(vehiculo);
-        VehiculoDTO vehiculoDTO = vehiculoService.convertirAVehiculoDTO(nuevoVehiculo);
-        return new ResponseEntity<>(vehiculoDTO, HttpStatus.CREATED);
+        return new ResponseEntity<>(nuevoVehiculo, HttpStatus.CREATED);
     }
 
     // Actualizar un vehículo existente
