@@ -44,7 +44,7 @@ const VehiculosDisponibles = () => {
   return (
     <div>
       <Header />
-      <div className="min-h-screen flex items-center justify-center py-10 w-full sm:w-[90%] mx-auto px-6">
+      <div className="min-h-screen flex items-center justify-center pb-10 pt-28 w-full sm:w-[90%] mx-auto px-6">
         <div className="bg-white shadow-lg rounded-lg p-6  w-full sm:w-[80%] flex items-center justify-center flex-col relative pb-24 lg:pb-18">
           <h2 className="text-xl sm:text-2xl font-bold text-gray-700 text-center mb-6">
             Vehículos Disponibles

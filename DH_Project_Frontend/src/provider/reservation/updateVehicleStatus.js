@@ -1,13 +1,10 @@
 import api from "../../../api/api";
 
 export const updateVehicleStatus = async ({ id, status }) => {
-	const { data, error } = await api.put(`/vehiculo/${id}`, {
-		estado: status,
-	});
-
-	if (error) {
-		throw new Error(error.message);
-	}
-
-	return data;
+    try {
+        const response = await api.patch(`/vehiculos/${id}/estado`, { estado: status });
+        return response.data;
+    } catch (error) {
+        throw new Error(error.response?.data?.message || "Error al actualizar el estado del vehículo");
+    }
 };

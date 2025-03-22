@@ -2,7 +2,9 @@ import React from "react";
 import { Navigate } from "react-router-dom";
 
 const ProtectedRoute = ({ user, requiredTipo, children }) => {
-  if (!user || user.user_metadata?.tipo !== requiredTipo) {
+  console.log("info obtenida: ", user?.rol?.id);
+  console.log("Info requerida: ", requiredTipo);
+  if (!user || user?.rol?.id !== requiredTipo) {
     return <Navigate to="/access-denied" replace />;
   }
 

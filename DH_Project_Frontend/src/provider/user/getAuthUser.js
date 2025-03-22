@@ -1,19 +1,14 @@
-// src/auth.js
 import api from "../../../api/api";
 
 export const getAuthenticatedUser = async () => {
-	try {
-		const {
-			data: { user },
-			error,
-		} = await api.get("/auth/user");
-		if (error) {
-			throw error;
-		}
-		console.log("from getAuth: " + user);
-		return user;
-	} catch (error) {
-		console.error("Error al obtener el usuario:", error);
-		throw new Error("No se pudo obtener el usuario autenticado.");
-	}
+  try {
+    const response = await api.get("/auth/user");
+    return response.data; // Devuelve directamente los datos del usuario
+  } catch (error) {
+    console.error(
+      "Error al obtener el usuario:",
+      error.response?.data || error.message
+    );
+    throw new Error(error.response?.data?.message || "Error desconocido al obtener el usuario.");
+  }
 };

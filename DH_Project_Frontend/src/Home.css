@@ -1,0 +1,26 @@
+/* Estilos personalizados para el DateRangePicker */
+.date-range-picker .rdrMonthAndYearWrapper {
+    background-color: #f7f9fb;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  
+  .date-range-picker .rdrDayToday .rdrDayNumber span:after {
+    background-color: #1e3a8a;
+  }
+  
+  .date-range-picker .rdrDayNumber span {
+    color: #1e3a8a;
+  }
+  
+  .date-range-picker .rdrSelected {
+    background-color: #1e3a8a;
+  }
+  
+  .date-range-picker .rdrInRange {
+    background-color: #1e3a8a20;
+  }
+  
+  .date-range-picker .rdrStartEdge,
+  .date-range-picker .rdrEndEdge {
+    background-color: #1e3a8a;
+  }

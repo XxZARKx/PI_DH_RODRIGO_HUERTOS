@@ -8,32 +8,34 @@ import "slick-carousel/slick/slick-theme.css";
 import RegistrarVehiculo from "./components/RegistrarVehiculo";
 import VehiculosDisponibles from "./components/VehiculosDisponibles";
 import DetallesVehiculo from "./components/DetallesVehiculo";
-// import PanelAdmin from "./components/PanelAdmin";
-// import ProtectedRoute from "./components/ProtectedRoute";
-// import AccessDenied from "./components/AccessDenied";
-// import ReservaVehiculo from "./components/ReservaVehiculo";
+import PanelAdmin from "./components/PanelAdmin";
+import ProtectedRoute from "./components/ProtectedRoute";
+import AccessDenied from "./components/AccessDenied";
+import ReservaVehiculo from "./components/ReservaVehiculo";
 // import MisReservas from "./components/UserReservas";
 import PoliticaPrivacidad from "./components/PoliticaPrivacidad";
 import TerminosYCondiciones from "./components/TerminosYCondiciones";
+import BuscarResultados from "./components/BuscarResultados";
 
-// const getUserFromLocalStorage = () => {
-//   try {
-//     const userData = localStorage.getItem("user");
-//     if (!userData) return null;
-//     return JSON.parse(userData);
-//   } catch (error) {
-//     console.error("Error al analizar los datos del usuario:", error);
-//     return null;
-//   }
-// };
+const getUserFromSessionStorage = () => {
+  try {
+    const userData = sessionStorage.getItem("user");
+    console.log("Obteniendo el usuario de la sesion: ", userData);
+    if (!userData) return null;
+    return JSON.parse(userData);
+  } catch (error) {
+    console.error("Error al analizar los datos del usuario:", error);
+    return null;
+  }
+};
 
-// const isMobileDevice = () => {
-//   return window.innerWidth < 768;
-// };
+const isMobileDevice = () => {
+  return window.innerWidth < 768;
+};
 
 function App() {
-  //   const user = getUserFromLocalStorage();
-
+  const user = getUserFromSessionStorage();
+  console.log("obteniendo id: ", user?.rol?.id);
   return (
     <div className="bg-[#E4E4E4]">
       <BrowserRouter>
@@ -47,9 +49,9 @@ function App() {
           <Route
             path="/register/admin"
             element={
-              //   <ProtectedRoute user={user} requiredTipo={1}>
-              <Register tipo={1} titulo="Registrar Empleado" />
-              //   </ProtectedRoute>
+              <ProtectedRoute user={user} requiredTipo={1}>
+                <Register tipo={1} titulo="Registrar Empleado" />
+              </ProtectedRoute>
             }
           />
           <Route path="/vehicles" element={<VehiculosDisponibles />} />
@@ -60,7 +62,7 @@ function App() {
           />
 
           <Route path="/vehicles/:id" element={<DetallesVehiculo />} />
-          {/* <Route path="/reservation/:id" element={<ReservaVehiculo />} /> */}
+          <Route path="/reservation/:id" element={<ReservaVehiculo />} />
           {/* <Route path="/mis-reservas" element={<MisReservas />} /> */}
 
           <Route
@@ -71,27 +73,30 @@ function App() {
               // </ProtectedRoute>
             }
           />
-          {/* 
-					
-					<Route
-						path="/admin/panel"
-						element={
-							<ProtectedRoute user={user} requiredTipo={1}>
-								<PanelAdmin />
-							</ProtectedRoute>
-						}
-					/>
-					<Route
-						path="/admin/panel/:pestania"
-						element={
-							<ProtectedRoute user={user} requiredTipo={1}>
-								<PanelAdmin />
-							</ProtectedRoute>
-						}
-					/>
+          <Route
+            path="/buscar-resultados"
+            element={<BuscarResultados />}
+          ></Route>
 
-					<Route path="*" element={<div>Página no encontrada</div>} />
-					<Route path="/access-denied" element={<AccessDenied />} /> */}
+          <Route
+            path="/admin/panel"
+            element={
+              // <ProtectedRoute user={user} requiredTipo={1}>
+              <PanelAdmin />
+              // </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/panel/:pestania"
+            element={
+              // <ProtectedRoute user={user} requiredTipo={1}>
+              <PanelAdmin />
+              // </ProtectedRoute>
+            }
+          />
+
+          <Route path="*" element={<div>Página no encontrada</div>} />
+          {/* <Route path="/access-denied" element={<AccessDenied />} /> */}
         </Routes>
       </BrowserRouter>
     </div>

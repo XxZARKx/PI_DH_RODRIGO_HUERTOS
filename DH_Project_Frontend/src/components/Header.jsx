@@ -36,103 +36,103 @@ const Header = () => {
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
-  console.log("mostrando info del usuario: ", user);
-
   return (
-    <div className="px-4 md:px-10 py-2 flex items-center justify-between max-w-full w-full min-h-[10%] bg-[#9C9C9C]">
-      <Link to="/">
-        <img
-          src={logo}
-          alt="logo"
-          className="w-20 h-20 md:w-32 md:h-32 object-cover cursor-pointer"
-        />
-      </Link>
+    <div className="min-h-[10vh] z-30">
+      <div className="px-4 md:px-10 z-50 py-2 flex fixed items-center justify-between max-w-full w-full min-h-[10%] bg-[#9C9C9C]">
+        <Link to="/">
+          <img
+            src={logo}
+            alt="logo"
+            className="w-20 h-20 md:w-32 md:h-32 object-cover cursor-pointer"
+          />
+        </Link>
 
-      <div className="md:hidden">
-        <button
-          onClick={toggleMenu}
-          className="text-black text-2xl focus:outline-none"
-        >
-          ☰
-        </button>
-      </div>
-
-      {isMenuOpen && (
-        <div className="fixed pt-8 top-0 left-0 w-screen h-full bg-[#9C9C9C] z-50 text-black flex flex-col p-4">
-          <div className="flex justify-between items-center mb-4">
-            {user ? (
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-                  <img src={Avatar} className="rounded-full" />
-                </div>
-                <span className="font-semibold">
-                  {user?.nombre} {user?.apellido}
-                </span>
-              </div>
-            ) : (
-              <span className="text-lg font-semibold">Menú</span>
-            )}
-            <button onClick={toggleMenu} className="text-2xl">
-              ✕
-            </button>
-          </div>
-
-          <ul className="flex flex-col gap-4 text-lg">
-            {user?.rol?.id === 1 && (
-              <>
-                <li>
-                  <Link to="/vehicles/register" onClick={toggleMenu}>
-                    Registrar Vehículo
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/admin/panel/usuarios" onClick={toggleMenu}>
-                    Panel
-                  </Link>
-                </li>
-              </>
-            )}
-            <li>
-              <Link to="/vehicles" onClick={toggleMenu}>
-                Nuestros Autos
-              </Link>
-            </li>
-            {user ? (
-              <UserMenu user={user} onLogout={handleLogout} isMobile />
-            ) : (
-              <UserMenu user={null} onLogout={handleLogout} isMobile />
-            )}
-          </ul>
+        <div className="md:hidden">
+          <button
+            onClick={toggleMenu}
+            className="text-black text-2xl focus:outline-none"
+          >
+            ☰
+          </button>
         </div>
-      )}
 
-      <ul className="hidden md:flex gap-8 items-center text-base text-white">
-        {user?.rol?.id === 1 && (
-          <>
-            <li>
-              <Link to="/vehicles/register">Registrar Vehículo</Link>
-            </li>
-            <li>
-              <Link to="/admin/panel/usuarios">Panel</Link>
-            </li>
-          </>
+        {isMenuOpen && (
+          <div className="fixed pt-8 top-0 left-0 w-screen h-full bg-[#9C9C9C] z-50 text-black flex flex-col p-4">
+            <div className="flex justify-between items-center mb-4">
+              {user ? (
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
+                    <img src={Avatar} className="rounded-full" />
+                  </div>
+                  <span className="font-semibold">
+                    {user?.nombre} {user?.apellido}
+                  </span>
+                </div>
+              ) : (
+                <span className="text-lg font-semibold">Menú</span>
+              )}
+              <button onClick={toggleMenu} className="text-2xl">
+                ✕
+              </button>
+            </div>
+
+            <ul className="flex flex-col gap-4 text-lg">
+              {user?.rol?.id === 1 && (
+                <>
+                  <li>
+                    <Link to="/vehicles/register" onClick={toggleMenu}>
+                      Registrar Vehículo
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/admin/panel/usuarios" onClick={toggleMenu}>
+                      Panel
+                    </Link>
+                  </li>
+                </>
+              )}
+              <li>
+                <Link to="/vehicles" onClick={toggleMenu}>
+                  Nuestros Autos
+                </Link>
+              </li>
+              {user ? (
+                <UserMenu user={user} onLogout={handleLogout} isMobile />
+              ) : (
+                <UserMenu user={null} onLogout={handleLogout} isMobile />
+              )}
+            </ul>
+          </div>
         )}
-        <li>
-          <Link to="/vehicles">Nuestros Autos</Link>
-        </li>
-        {!user ? (
-          <>
-            <li>
-              <Link to="/register">Registrarse</Link>
-            </li>
-            <li>
-              <Link to="/login">Iniciar Sesión</Link>
-            </li>
-          </>
-        ) : (
-          <UserMenu user={user} onLogout={handleLogout} />
-        )}
-      </ul>
+
+        <ul className="hidden md:flex gap-8 items-center text-base text-white">
+          {user?.rol?.id === 1 && (
+            <>
+              <li>
+                <Link to="/vehicles/register">Registrar Vehículo</Link>
+              </li>
+              <li>
+                <Link to="/admin/panel/usuarios">Panel</Link>
+              </li>
+            </>
+          )}
+          <li>
+            <Link to="/vehicles">Nuestros Autos</Link>
+          </li>
+          {!user ? (
+            <>
+              <li>
+                <Link to="/register">Registrarse</Link>
+              </li>
+              <li>
+                <Link to="/login">Iniciar Sesión</Link>
+              </li>
+            </>
+          ) : (
+            <UserMenu user={user} onLogout={handleLogout} />
+          )}
+        </ul>
+      </div>
     </div>
   );
 };

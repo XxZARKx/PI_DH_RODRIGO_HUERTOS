@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import { uploadImage } from "../provider/vehicle/uploadImage";
 import { createVehicle } from "../provider/vehicle/createVehicle";
+import { getCategories } from "../provider/vehicle/getCategories";
 
 const CreateVehicleForm = () => {
   const [formData, setFormData] = useState({
@@ -12,7 +13,7 @@ const CreateVehicleForm = () => {
     cantidadpersonas: 4,
     puertas: 4,
     equipaje: 2,
-    categoria: "A",
+    categorias: [],
     precio: "",
     imagen_url: "",
   });
@@ -20,25 +21,61 @@ const CreateVehicleForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
   const [isFileValid, setIsFileValid] = useState(false);
-  // Expresión regular para validar la placa (ajustar según el formato requerido)
+  const [categories, setCategories] = useState([]); // Estado para almacenar las categorías
+
+  // Obtener las categorías al montar el componente
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const categories = await getCategories();
+        console.log("Categorías recibidas en el frontend:", categories); // Depuración
+        setCategories(Array.isArray(categories) ? categories : []);
+      } catch (error) {
+        console.error("Error al obtener las categorías:", error);
+        setCategories([]); // En caso de error, establece un array vacío
+      }
+    };
+    fetchCategories();
+  }, []);
+
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile && selectedFile.type.startsWith("image/")) {
       setFile(selectedFile);
       setIsFileValid(true);
-      setImagePreview(URL.createObjectURL(selectedFile)); // Preview de la imagen
+      setImagePreview(URL.createObjectURL(selectedFile));
     } else {
       setIsFileValid(false);
-      setImagePreview(null); // Limpiar el preview si no es una imagen válida
+      setImagePreview(null);
     }
   };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
+
+  const handleCategoryChange = (e) => {
+    const { value, checked } = e.target;
+    const categoryId = parseInt(value, 10);
+
+    setFormData((prevData) => {
+      if (checked) {
+        return {
+          ...prevData,
+          categorias: [...prevData.categorias, categoryId],
+        };
+      } else {
+        return {
+          ...prevData,
+          categorias: prevData.categorias.filter((id) => id !== categoryId),
+        };
+      }
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Validación de la placa
     const matriculaRegex = /^[A-Za-z0-9]{1,5}-[A-Za-z0-9]{1,5}$/;
     if (!matriculaRegex.test(formData.matricula)) {
       Swal.fire({
@@ -72,7 +109,6 @@ const CreateVehicleForm = () => {
         icon: "success",
         title: "Vehículo creado con éxito",
       });
-      // Restablecer todos los estados del formulario, incluyendo el input de archivo
       setFormData({
         marca: "",
         modelo: "",
@@ -81,13 +117,13 @@ const CreateVehicleForm = () => {
         cantidadpersonas: 4,
         puertas: 4,
         equipaje: 2,
-        categoria: "A",
+        categorias: [], // Reiniciar las categorías seleccionadas
         precio: "",
         imagen_url: "",
       });
       setFile(null);
       setImagePreview(null);
-      setIsFileValid(false); // Restablecer la validación del archivo
+      setIsFileValid(false);
     } else {
       Swal.fire({
         icon: "error",
@@ -95,6 +131,7 @@ const CreateVehicleForm = () => {
       });
     }
   };
+
   const isFormValid = () => {
     return (
       formData.marca &&
@@ -104,8 +141,9 @@ const CreateVehicleForm = () => {
       isFileValid
     );
   };
+
   return (
-    <div className="min-h-screen bg-[#E4E4E4] flex items-center justify-center relative py-10 px-4">
+    <div className="min-h-screen bg-[#E4E4E4] flex items-center justify-center relative pb-10 pt-28 px-4">
       {isLoading && (
         <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-white"></div>
@@ -212,15 +250,38 @@ const CreateVehicleForm = () => {
             <option value={3}>3 Maletas</option>
             <option value={4}>4 Maletas</option>
           </select>
-          <select
-            name="categoria"
-            value={formData.categoria}
-            onChange={handleChange}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="A">Categoría A</option>
-            <option value="B">Categoría B</option>
-          </select>
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-700">
+              Categorías:
+            </label>
+            <div className="grid grid-cols-3 gap-2">
+              {categories.length > 0 ? (
+                categories.map((category) => (
+                  <div key={category.id} className="flex items-center">
+                    <input
+                      type="checkbox"
+                      id={`category-${category.id}`}
+                      value={category.id}
+                      checked={formData.categorias.includes(category.id)}
+                      onChange={handleCategoryChange}
+                      className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    />
+                    <label
+                      htmlFor={`category-${category.id}`}
+                      className="ml-2 text-sm text-gray-700 flex items-center"
+                    >
+                      <i
+                        className={`fa-solid ${category.iconoClass}  mr-2`}
+                      ></i>
+                      {category.nombre}
+                    </label>
+                  </div>
+                ))
+              ) : (
+                <p>No hay categorías disponibles.</p>
+              )}
+            </div>
+          </div>
           <input
             type="number"
             name="precio"

@@ -9,19 +9,29 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validación básica
+    if (!email || !password) {
+      setErrorMessage("Por favor, completa todos los campos.");
+      return;
+    }
+
     try {
-      const { token } = await loginUser({ email, password });
+      // Iniciar sesión y obtener el token y datos del usuario
+      const { token, user } = await loginUser({ email, password });
 
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify({ email }));
+      // Almacenar el token y los datos del usuario
+      sessionStorage.setItem("token", token);
+      sessionStorage.setItem("user", JSON.stringify(user));
 
-      window.dispatchEvent(new Event("storage"));
-
+      // Redirigir al usuario a la página principal
       window.location.href = "/";
     } catch (error) {
-      setErrorMessage(error.message || "Error al iniciar sesión.");
+      // Mostrar mensaje de error específico
+      setErrorMessage(error.message || "Error desconocido al iniciar sesión.");
     }
   };
 
@@ -34,6 +44,7 @@ const Login = () => {
           Iniciar Sesión
         </h2>
         <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
+          {/* Campo de correo electrónico */}
           <input
             className="px-4 py-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
             type="email"
@@ -42,7 +53,9 @@ const Login = () => {
             placeholder="Correo Electrónico"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            required
           />
+          {/* Campo de contraseña */}
           <div className="relative">
             <input
               className="px-4 py-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -52,6 +65,7 @@ const Login = () => {
               placeholder="Contraseña"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              required
             />
             <button
               type="button"
@@ -65,11 +79,13 @@ const Login = () => {
               )}
             </button>
           </div>
+          {/* Mensaje de error */}
           {errorMessage && (
             <div className="text-red-500 text-sm mt-2 text-center">
               {errorMessage}
             </div>
           )}
+          {/* Botón de inicio de sesión */}
           <button
             type="submit"
             className="bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
@@ -77,10 +93,11 @@ const Login = () => {
             Ingresar
           </button>
         </form>
+        {/* Enlaces adicionales */}
         <p className="mt-4 text-center text-sm text-gray-600">
-          ¿No tienes una Cuenta?{" "}
+          ¿No tienes una cuenta?{" "}
           <Link
-            to={`/register`}
+            to="/register"
             className="text-blue-500 hover:text-blue-700 transition duration-200"
           >
             Regístrate
@@ -88,7 +105,7 @@ const Login = () => {
         </p>
         <p className="mt-4 text-center text-sm text-gray-600">
           <Link
-            to={`/`}
+            to="/"
             className="text-blue-500 hover:text-blue-700 transition duration-200"
           >
             Ir al inicio

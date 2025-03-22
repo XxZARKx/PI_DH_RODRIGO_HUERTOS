@@ -30,12 +30,6 @@ const CardAuto = ({ vehicle }) => {
             {vehicle.equipaje}
           </p>
         </Tooltip>
-        <Tooltip title={"Categoria"}>
-          <p className="flex items-center gap-x-2 w-[20%]">
-            <i className="fa-solid fa-car" />
-            {vehicle.categoria}
-          </p>
-        </Tooltip>
       </div>
       <div className="flex w-full justify-between mt-2 items-center">
         <p className="text-xs">S/{vehicle.precio} /dia</p>

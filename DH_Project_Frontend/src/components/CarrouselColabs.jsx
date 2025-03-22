@@ -18,7 +18,7 @@ function CarrouselColabs() {
   };
 
   return (
-    <div className="pX-[50px] mx-auto max-w-[500px]">
+    <div className="px-[50px] mx-auto max-w-[500px]">
       <Slider {...settings}>
         {colabsLogo.map((colab) => (
           <div key={colab.id}>
