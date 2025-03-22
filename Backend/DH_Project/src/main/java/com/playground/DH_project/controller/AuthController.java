@@ -36,38 +36,37 @@ public class AuthController {
                 usuario.getApellido(), usuario.getCorreo(), usuario.getRol()));
     }
 
-    // Nuevo endpoint para obtener el usuario autenticado
     @GetMapping("/user")
     public ResponseEntity<?> getAuthenticatedUser(HttpServletRequest request) {
-        // Extraer el token JWT del encabezado de autorización
         String authorizationHeader = request.getHeader("Authorization");
 
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            return ResponseEntity.status(401).body("Token no proporcionado o inválido");
+            return ResponseEntity.status(401).body("Acceso denegado. Token no proporcionado.");
         }
 
-        String token = authorizationHeader.substring(7); // Quitar "Bearer " del token
+        String token = authorizationHeader.substring(7);
 
-        // Validar el token y extraer el correo del usuario
-        String correo = jwtUtil.extractUsername(token);
+        try {
+            String correo = jwtUtil.extractUsername(token);
 
-        if (correo == null || !jwtUtil.isTokenValid(token, correo)) {
-            return ResponseEntity.status(401).body("Token inválido o expirado");
+            if (correo == null || !jwtUtil.isTokenValid(token, correo)) {
+                return ResponseEntity.status(401).body("Token inválido o expirado.");
+            }
+
+            Usuario usuario = usuarioRepository.findByCorreo(correo)
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+            return ResponseEntity.ok(new AuthResponse(
+                    token,
+                    usuario.getId(),
+                    usuario.getNombre(),
+                    usuario.getApellido(),
+                    usuario.getCorreo(),
+                    usuario.getRol()
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.status(401).body("Error al validar el token: " + e.getMessage());
         }
-
-        // Buscar el usuario por su correo
-        Usuario usuario = usuarioRepository.findByCorreo(correo)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-
-        // Devolver los datos del usuario
-        return ResponseEntity.ok(new AuthResponse(
-                token,
-                usuario.getId(),
-                usuario.getNombre(),
-                usuario.getApellido(),
-                usuario.getCorreo(),
-                usuario.getRol()
-        ));
     }
 
     public static class AuthRequest {
@@ -105,4 +104,4 @@ public class AuthController {
         public String getCorreo() { return correo; }
         public RolUsuario getRol() { return rol; }
     }
-}   
+}
