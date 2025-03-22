@@ -1,5 +1,6 @@
 package com.playground.DH_project.repository;
 
+import com.playground.DH_project.model.Reserva;
 import com.playground.DH_project.model.Vehiculo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -20,4 +21,8 @@ public interface VehiculoRepository extends JpaRepository<Vehiculo, Integer> {
     List<Vehiculo> findVehiculosDisponibles(
             @Param("fechaInicio") LocalDateTime fechaInicio,
             @Param("fechaFin") LocalDateTime fechaFin);
+
+    @Query("SELECT r FROM Reserva r WHERE r.vehiculo.id = :vehiculoId")
+    List<Reserva> findByVehiculoId(@Param("vehiculoId") Integer vehiculoId);
+
 }

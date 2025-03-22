@@ -2,7 +2,9 @@ package com.playground.DH_project.service;
 
 import com.playground.DH_project.dto.VehiculoDTO;
 import com.playground.DH_project.model.Categoria;
+import com.playground.DH_project.model.Reserva;
 import com.playground.DH_project.model.Vehiculo;
+import com.playground.DH_project.repository.ReservaRepository;
 import com.playground.DH_project.repository.VehiculoRepository;
 import com.playground.DH_project.repository.CategoriaRepository;
 import jakarta.transaction.Transactional;
@@ -10,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -24,6 +28,9 @@ public class VehiculoService {
 
     @Autowired
     private CategoriaRepository categoriaRepository;
+
+    @Autowired
+    private ReservaRepository reservaRepository;
 
     // Lista todos los vehículos
     public List<Vehiculo> obtenerTodos() {
@@ -128,8 +135,26 @@ public class VehiculoService {
         return vehiculoRepository.save(vehiculo);
     }
 
-    public List<Vehiculo> obtenerVehiculosDisponibles(LocalDateTime fechaInicio, LocalDateTime fechaFin) {
-        return vehiculoRepository.findVehiculosDisponibles(fechaInicio, fechaFin);
+    public List<Vehiculo> obtenerVehiculosDisponibles(LocalDateTime inicio, LocalDateTime fin) {
+        // Convertir LocalDateTime a OffsetDateTime usando la zona horaria UTC
+        OffsetDateTime inicioOffset = inicio.atOffset(ZoneOffset.UTC);
+        OffsetDateTime finOffset = fin.atOffset(ZoneOffset.UTC);
+
+        // Obtener todos los vehículos
+        List<Vehiculo> todosLosVehiculos = vehiculoRepository.findAll();
+
+        // Filtrar los vehículos que están disponibles en el rango de fechas
+        return todosLosVehiculos.stream()
+                .filter(vehiculo -> {
+                    // Obtener las reservas del vehículo
+                    List<Reserva> reservas = reservaRepository.findByVehiculoId(vehiculo.getId());
+
+                    // Verificar que no haya reservas que se superpongan con el rango de fechas
+                    return reservas.stream().noneMatch(reserva ->
+                            !(reserva.getFechaDevolucion().isBefore(inicioOffset) || reserva.getFechaReserva().isAfter(finOffset))
+                    );
+                })
+                .toList();
     }
 
     @Transactional

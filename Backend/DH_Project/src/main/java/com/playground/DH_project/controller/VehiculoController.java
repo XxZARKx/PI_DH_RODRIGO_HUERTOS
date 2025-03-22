@@ -72,11 +72,16 @@ public class VehiculoController {
     public ResponseEntity<List<Vehiculo>> obtenerVehiculosDisponibles(
             @RequestParam String fechaInicio,
             @RequestParam String fechaFin,
-            @RequestParam(required = false) String marca) { // Marca es opcional
+            @RequestParam(required = false) String marca) {
         try {
             // Parsear las fechas desde String a LocalDateTime
             LocalDateTime inicio = LocalDateTime.parse(fechaInicio);
             LocalDateTime fin = LocalDateTime.parse(fechaFin);
+
+            // Validar que las fechas sean coherentes
+            if (inicio.isAfter(fin)) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // Fecha de inicio después de la fecha de fin
+            }
 
             // Obtener los vehículos disponibles
             List<Vehiculo> vehiculosDisponibles = vehiculoService.obtenerVehiculosDisponibles(inicio, fin);
@@ -84,12 +89,16 @@ public class VehiculoController {
             // Filtrar por marca solo si se proporciona
             if (marca != null && !marca.isEmpty()) {
                 vehiculosDisponibles = vehiculosDisponibles.stream()
-                        .filter(v -> v.getMarca().equalsIgnoreCase(marca)) // Filtrar por marca (insensible a mayúsculas/minúsculas)
+                        .filter(v -> v.getMarca().equalsIgnoreCase(marca))
                         .toList();
             }
 
+            if (vehiculosDisponibles.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT); // No hay vehículos disponibles
+            }
+
             return new ResponseEntity<>(vehiculosDisponibles, HttpStatus.OK);
-        } catch (DateTimeParseException e) {
+        } catch (Exception e) {
             // Manejar errores de formato de fecha
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

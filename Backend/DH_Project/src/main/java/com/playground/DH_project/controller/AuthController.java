@@ -105,4 +105,4 @@ public class AuthController {
         public String getCorreo() { return correo; }
         public RolUsuario getRol() { return rol; }
     }
-}
+}   
