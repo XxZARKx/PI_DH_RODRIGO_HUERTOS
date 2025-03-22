@@ -96,3 +96,9 @@
     display: none !important;
   }
 }
+
+/* Fechas reservadas */
+.reserved-date {
+  background-color: #ffcccc; /* Color claro para resaltar */
+  border-radius: 50%;
+}

@@ -1,7 +1,7 @@
 import api from "../../../api/api";
 
 export const updateVehicle = async (vehicle) => {
-	const { data, error } = await api.put(`/vehiculo/${vehicle.id}`, vehicle);
+	const { data, error } = await api.put(`/vehiculos/${vehicle.id}`, vehicle);
 
 	if (error) {
 		console.error("Error al actualizar el vehículo:", error);

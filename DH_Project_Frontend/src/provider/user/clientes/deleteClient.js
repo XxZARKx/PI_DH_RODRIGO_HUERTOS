@@ -2,7 +2,7 @@ import api from "../../../../api/api";
 
 export const deleteClient = async (id) => {
 	try {
-		const { data, error } = await api.delete(`/usuario/${id}`);
+		const { data, error } = await api.delete(`/usuarios/${id}`);
 
 		if (error) {
 			console.error("Error al eliminar el usuario:", error);

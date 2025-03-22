@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { getAuthenticatedUser } from "../provider/user/getAuthUser";
@@ -16,7 +16,6 @@ const ReservaVehiculo = () => {
   const [loading, setLoading] = useState(false);
   const [startDate, setStartDate] = useState(new Date()); // Fecha de inicio
   const [endDate, setEndDate] = useState(new Date()); // Fecha de fin
-  const [sucursales, setSucursales] = useState([]); // Estado para almacenar las sucursales
   const [selectedSucursal, setSelectedSucursal] = useState(null); // Estado para la sucursal seleccionada
 
   // Obtener la fecha mínima permitida (hoy)
@@ -37,24 +36,23 @@ const ReservaVehiculo = () => {
     queryKey: ["vehicle", vehicleId],
     queryFn: () => getVehicleById(vehicleId),
     enabled: !!vehicleId,
+    retry: 3, // Intentar hasta 3 veces si falla
+    staleTime: 1000 * 60 * 5, // Mantener los datos frescos durante 5 minutos
+    refetchOnWindowFocus: false, // Evitar recargar al cambiar de ventana
   });
 
   // Consulta para obtener las sucursales
   const {
-    data: sucursalesData,
+    data: sucursales,
     isLoading: isLoadingSucursales,
     error: sucursalesError,
   } = useQuery({
     queryKey: ["sucursales"],
     queryFn: getSucursales,
+    retry: 3, // Intentar hasta 3 veces si falla
+    staleTime: 1000 * 60 * 5, // Mantener los datos frescos durante 5 minutos
+    refetchOnWindowFocus: false, // Evitar recargar al cambiar de ventana
   });
-
-  // Efecto para cargar las sucursales
-  useEffect(() => {
-    if (sucursalesData) {
-      setSucursales(sucursalesData);
-    }
-  }, [sucursalesData]);
 
   // Mutación para crear la reserva
   const createReservationMutation = useMutation({
@@ -66,6 +64,22 @@ const ReservaVehiculo = () => {
     onError: (error) => {
       console.error("Error al realizar la reserva:", error);
       Swal.fire("Error", "Error al realizar la reserva.", "error");
+    },
+  });
+
+  // Mutación para actualizar el estado del vehículo
+  const updateVehicleStatusMutation = useMutation({
+    mutationFn: updateVehicleStatus,
+    onSuccess: () => {
+      console.log("Estado del vehículo actualizado correctamente.");
+    },
+    onError: (error) => {
+      console.error("Error al actualizar el estado del vehículo:", error);
+      Swal.fire(
+        "Error",
+        "No se pudo actualizar el estado del vehículo.",
+        "error"
+      );
     },
   });
 
@@ -82,11 +96,11 @@ const ReservaVehiculo = () => {
   const handleReservation = async () => {
     setLoading(true);
     try {
-      const user = await getAuthenticatedUser(); // Obtener usuario autenticado
+      const user = await getAuthenticatedUser(navigate); // Obtener usuario autenticado
       if (!user) {
         Swal.fire(
-          "Error",
-          "Por favor, inicia sesión para realizar una reserva.",
+          "Inicia sesión",
+          "Debes iniciar sesión para realizar una reserva.",
           "warning"
         );
         setLoading(false);
@@ -103,9 +117,7 @@ const ReservaVehiculo = () => {
       const vehicleIdInt = vehicle.id; // ID del vehículo
 
       // Formatear fechas (opcional, dependiendo del backend)
-      const formatDate = (date) => {
-        return date.toISOString().split(".")[0] + "Z"; // Añade la "Z" al final
-      };
+      const formatDate = (date) => date.toISOString().split(".")[0] + "Z";
 
       // Crear los datos de la reserva
       const reservation = {
@@ -124,19 +136,47 @@ const ReservaVehiculo = () => {
       await createReservationMutation.mutateAsync(reservation);
 
       // Actualizar el estado del vehículo a "Reservado"
-      await updateVehicleStatus({ id: vehicleIdInt, status: "Reservado" });
+      await updateVehicleStatusMutation.mutateAsync({
+        id: vehicleIdInt,
+        status: "Reservado",
+      });
     } catch (error) {
       console.error("Error al realizar la reserva:", error);
-      Swal.fire("Error", "Error al realizar la reserva.", "error");
+
+      // Mostrar mensaje de error específico del backend
+      let errorMessage = "Error desconocido.";
+      if (error.message === "No has iniciado sesión.") {
+        errorMessage = "Debes iniciar sesión para realizar esta acción.";
+      } else if (error.response?.data?.message) {
+        errorMessage = error.response.data.message; // Mensaje específico del backend
+      } else if (error.message) {
+        errorMessage = error.message; // Mensaje específico del error
+      }
+
+      Swal.fire("Error", errorMessage, "error");
     }
     setLoading(false);
   };
 
+  // Manejo de estados de carga y errores
   if (isLoadingVehicle || isLoadingSucursales) {
-    return <div>Cargando...</div>;
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500"></div>
+      </div>
+    );
   }
-  if (vehicleError || !vehicle || sucursalesError) {
-    return <div>Error al obtener los datos del vehículo o las sucursales.</div>;
+
+  if (vehicleError || sucursalesError) {
+    const errorMessage =
+      vehicleError?.message ||
+      sucursalesError?.message ||
+      "Error desconocido al cargar los datos.";
+    return (
+      <div className="text-center py-10 text-xl text-red-600">
+        Error al cargar los datos: {errorMessage}
+      </div>
+    );
   }
 
   return (
@@ -218,7 +258,7 @@ const ReservaVehiculo = () => {
               className="w-full border rounded px-3 py-2"
             >
               <option value="">Selecciona una sucursal</option>
-              {sucursales.map((sucursal) => (
+              {sucursales?.map((sucursal) => (
                 <option key={sucursal.id} value={sucursal.id}>
                   {sucursal.nombreSucursal}
                 </option>

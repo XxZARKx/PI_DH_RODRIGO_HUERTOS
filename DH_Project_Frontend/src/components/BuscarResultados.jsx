@@ -1,18 +1,16 @@
 import React from "react";
-import { useLocation } from "react-router-dom";
 import CardAuto from "./CardAuto";
 import Header from "./Header";
 import Footer from "./Footer";
 import { useQuery } from "@tanstack/react-query";
 import { getAvailableVehicles } from "../provider/vehicle/getVehicles";
+import { useSearchParams } from "react-router-dom";
 
 const BuscarResultados = () => {
-  const location = useLocation();
-  const {
-    startDate: rawStartDate,
-    endDate: rawEndDate,
-    selectedBrand,
-  } = location.state || {};
+  const [searchParams] = useSearchParams();
+  const rawStartDate = searchParams.get("startDate");
+  const rawEndDate = searchParams.get("endDate");
+  const selectedBrand = searchParams.get("brand");
 
   // Convertir las fechas de string ISO a objetos Date
   const startDate = rawStartDate ? new Date(rawStartDate) : null;

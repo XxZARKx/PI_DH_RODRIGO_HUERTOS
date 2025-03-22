@@ -20,6 +20,7 @@ const Header = () => {
 
   const handleLogout = () => {
     sessionStorage.removeItem("user");
+    sessionStorage.removeItem("token");
     setUser(null);
     window.location.href = "/";
   };

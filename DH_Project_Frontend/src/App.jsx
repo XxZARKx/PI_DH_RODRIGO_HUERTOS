@@ -68,9 +68,9 @@ function App() {
           <Route
             path="/vehicles/register"
             element={
-              // <ProtectedRoute user={user} requiredTipo={1}>
-              <RegistrarVehiculo />
-              // </ProtectedRoute>
+              <ProtectedRoute user={user} requiredTipo={1}>
+                <RegistrarVehiculo />
+              </ProtectedRoute>
             }
           />
           <Route
@@ -81,22 +81,22 @@ function App() {
           <Route
             path="/admin/panel"
             element={
-              // <ProtectedRoute user={user} requiredTipo={1}>
-              <PanelAdmin />
-              // </ProtectedRoute>
+              <ProtectedRoute user={user} requiredTipo={1}>
+                <PanelAdmin />
+              </ProtectedRoute>
             }
           />
           <Route
             path="/admin/panel/:pestania"
             element={
-              // <ProtectedRoute user={user} requiredTipo={1}>
-              <PanelAdmin />
-              // </ProtectedRoute>
+              <ProtectedRoute user={user} requiredTipo={1}>
+                <PanelAdmin />
+              </ProtectedRoute>
             }
           />
 
           <Route path="*" element={<div>Página no encontrada</div>} />
-          {/* <Route path="/access-denied" element={<AccessDenied />} /> */}
+          <Route path="/access-denied" element={<AccessDenied />} />
         </Routes>
       </BrowserRouter>
     </div>

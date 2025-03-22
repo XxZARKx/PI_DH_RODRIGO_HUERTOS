@@ -59,16 +59,14 @@ const Home = () => {
       return;
     }
 
-    const formattedStartDate = startDate.toISOString();
-    const formattedEndDate = endDate.toISOString();
+    const formattedStartDate = startDate.toISOString().split(".")[0]; // Elimina los milisegundos
+    const formattedEndDate = endDate.toISOString().split(".")[0];
 
-    navigate("/buscar-resultados", {
-      state: {
-        startDate: formattedStartDate,
-        endDate: formattedEndDate,
-        selectedBrand,
-      },
-    });
+    navigate(
+      `/buscar-resultados?startDate=${formattedStartDate}&endDate=${formattedEndDate}&brand=${encodeURIComponent(
+        selectedBrand
+      )}`
+    );
   };
 
   return (
@@ -141,21 +139,29 @@ const Home = () => {
       {/* Vehículos Recomendados */}
       <section className="pb-10 text-center">
         <h2 className="text-3xl font-bold text-gray-800 mb-8">
-          RESERVA AUTOS A LOS MEJORES PRECIOS: VEHÍCULOS RECOMENDADOS
+          VEHÍCULOS RECOMENDADOS
         </h2>
         <ul className="grid grid-cols-1 sm:grid-cols-2 gap-8 justify-center max-w-6xl mx-auto">
           {isLoading ? (
-            <li className="text-gray-600">Cargando vehículos...</li>
+            // Spinner mientras se cargan los datos
+            <li className="col-span-full flex justify-center items-center h-48">
+              <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500"></div>
+            </li>
           ) : isError ? (
-            <li className="text-red-500">Error: {error.message}</li>
+            // Mensaje de error si falla la carga
+            <li className="col-span-full text-red-500">
+              Error: {error.message}
+            </li>
           ) : recommendedVehicles.length > 0 ? (
+            // Mostrar los vehículos recomendados
             recommendedVehicles.map((vehicle) => (
               <li key={vehicle.id} className="max-w-[300px] mx-auto">
                 <CardAuto vehicle={vehicle} />
               </li>
             ))
           ) : (
-            <li className="text-gray-600">
+            // Mensaje cuando no hay vehículos disponibles
+            <li className="col-span-full text-gray-600">
               No hay vehículos recomendados disponibles.
             </li>
           )}
