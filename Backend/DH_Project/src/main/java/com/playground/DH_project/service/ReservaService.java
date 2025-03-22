@@ -120,4 +120,8 @@ public class ReservaService {
                 .orElseThrow(() -> new RuntimeException("Reserva no encontrada"));
         reservaRepository.delete(reservaExistente);
     }
+
+    public List<Reserva> findByVehiculoId(Integer vehiculoId) {
+        return reservaRepository.findByVehiculoId(vehiculoId);
+    }
 }

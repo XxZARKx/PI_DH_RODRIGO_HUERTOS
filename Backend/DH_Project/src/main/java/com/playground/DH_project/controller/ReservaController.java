@@ -51,4 +51,13 @@ public class ReservaController {
         reservaService.eliminarReserva(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @GetMapping("/vehiculo/{id}")
+    public ResponseEntity<List<Reserva>> getReservasByVehiculo(@PathVariable Integer id) {
+        List<Reserva> reservas = reservaService.findByVehiculoId(id);
+        if (reservas.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT); // No hay reservas
+        }
+        return new ResponseEntity<>(reservas, HttpStatus.OK);
+    }
 }
