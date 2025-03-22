@@ -94,4 +94,14 @@ public class VehiculoController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+
+    @PatchMapping("/{id}/estado")
+    public ResponseEntity<Vehiculo> actualizarEstadoVehiculo(@PathVariable Integer id, @RequestBody Map<String, String> request) {
+        String nuevoEstado = request.get("estado");
+        if (nuevoEstado == null || nuevoEstado.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Vehiculo vehiculoActualizado = vehiculoService.actualizarEstadoVehiculo(id, nuevoEstado);
+        return new ResponseEntity<>(vehiculoActualizado, HttpStatus.OK);
+    }
 }

@@ -131,4 +131,14 @@ public class VehiculoService {
     public List<Vehiculo> obtenerVehiculosDisponibles(LocalDateTime fechaInicio, LocalDateTime fechaFin) {
         return vehiculoRepository.findVehiculosDisponibles(fechaInicio, fechaFin);
     }
+
+    @Transactional
+    public Vehiculo actualizarEstadoVehiculo(Integer id, String nuevoEstado) {
+        Vehiculo vehiculo = vehiculoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Vehículo no encontrado"));
+
+        // Validar estados permitidos si es necesario
+        vehiculo.setEstado(nuevoEstado);
+        return vehiculoRepository.save(vehiculo);
+    }
 }
