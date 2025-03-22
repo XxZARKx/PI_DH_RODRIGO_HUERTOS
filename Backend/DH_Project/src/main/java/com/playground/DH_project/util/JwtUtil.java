@@ -16,7 +16,9 @@ public class JwtUtil {
 
     // Genera un token con la información del usuario
     public String generateToken(String username) {
-        long expirationMillis = 1000 * 60 * 60; // 1 hora
+//        long expirationMillis = 1000 * 60 * 60; // 1 hora
+        long expirationMillis = 20 * 1000; // 20s
+
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date())
