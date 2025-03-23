@@ -34,7 +34,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
-        configuration.addAllowedOrigin("*");
+        configuration.addAllowedOrigin("https://pi-dh-rodrigo-huertos.vercel.app");
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
 
