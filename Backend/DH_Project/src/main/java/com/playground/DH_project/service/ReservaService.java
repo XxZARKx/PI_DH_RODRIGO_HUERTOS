@@ -8,6 +8,7 @@ import com.playground.DH_project.repository.ReservaRepository;
 import com.playground.DH_project.repository.SucursalRepository;
 import com.playground.DH_project.repository.UsuarioRepository;
 import com.playground.DH_project.repository.VehiculoRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -123,5 +124,22 @@ public class ReservaService {
 
     public List<Reserva> findByVehiculoId(Integer vehiculoId) {
         return reservaRepository.findByVehiculoId(vehiculoId);
+    }
+
+    public List<Reserva> findByUsuarioId(Integer usuarioId) {
+        return reservaRepository.findByUsuarioId(usuarioId);
+    }
+
+    @Transactional
+    public void cancelarReserva(Integer reservaId) {
+        // Buscar la reserva por ID
+        Reserva reserva = reservaRepository.findById(reservaId)
+                .orElseThrow(() -> new RuntimeException("Reserva no encontrada"));
+
+        // Actualizar el estado del vehículo a "Disponible"
+        reserva.getVehiculo().setEstado("Disponible");
+
+        // Eliminar la reserva
+        reservaRepository.deleteById(reservaId);
     }
 }

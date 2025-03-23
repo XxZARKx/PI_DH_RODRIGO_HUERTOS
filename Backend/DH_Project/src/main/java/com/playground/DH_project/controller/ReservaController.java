@@ -60,4 +60,19 @@ public class ReservaController {
         }
         return new ResponseEntity<>(reservas, HttpStatus.OK);
     }
+
+    @GetMapping("/usuario/{id}")
+    public ResponseEntity<List<Reserva>> getReservasByUsuario(@PathVariable Integer id) {
+        List<Reserva> reservas = reservaService.findByUsuarioId(id);
+        if (reservas.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT); // No hay reservas
+        }
+        return new ResponseEntity<>(reservas, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/cancelar/{id}")
+    public ResponseEntity<Void> cancelarReserva(@PathVariable Integer id) {
+        reservaService.cancelarReserva(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }
