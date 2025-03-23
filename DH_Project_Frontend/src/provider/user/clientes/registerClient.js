@@ -39,7 +39,7 @@ export const registerClient = async (clientData) => {
         console.log("Usuario registrado y guardado en la base de datos.");
         return {
             success: true,
-            message: "Se ha enviado un correo de confirmación a tu email.",
+            message: "Se ha enviado un correo de confirmación a tu email. Puede que este en correo no deseado",
         };
     } catch (error) {
         console.error("Error al registrar el cliente:", error.message);

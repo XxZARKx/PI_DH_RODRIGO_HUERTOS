@@ -138,7 +138,7 @@ const RegisterForm = ({ tipo, titulo }) => {
             <input
               type="text"
               name="dni"
-              placeholder="DNI"
+              placeholder="DNI (8 digitos)"
               value={formData.dni}
               onChange={handleChange}
               className={`w-full p-3 border ${
