@@ -106,13 +106,11 @@ const ReservaVehiculo = () => {
         setLoading(false);
         return;
       }
-
       if (!selectedSucursal) {
         Swal.fire("Error", "Por favor, selecciona una sucursal.", "warning");
         setLoading(false);
         return;
       }
-
       const userId = user.id; // ID del usuario
       const vehicleIdInt = vehicle.id; // ID del vehículo
 
@@ -129,7 +127,6 @@ const ReservaVehiculo = () => {
         fechaDevolucion: formatDate(endDate),
         sucursal: { id: parseInt(selectedSucursal, 10) }, // Enviar el objeto Sucursal con el ID
       };
-
       console.log("Datos de la reserva:", reservation); // Depuración
 
       // Crear la reserva
@@ -143,14 +140,33 @@ const ReservaVehiculo = () => {
     } catch (error) {
       console.error("Error al realizar la reserva:", error);
 
-      // Mostrar mensaje de error específico del backend
+      // Manejar errores específicos
       let errorMessage = "Error desconocido.";
       if (error.message === "No has iniciado sesión.") {
         errorMessage = "Debes iniciar sesión para realizar esta acción.";
+      } else if (error.response?.status === 401) {
+        // Si el token ha expirado o es inválido
+        sessionStorage.removeItem("token"); // Limpiar la sesión
+        sessionStorage.removeItem("user");
+
+        errorMessage =
+          "Tu sesión ha expirado. Por favor, inicia sesión nuevamente.";
+        Swal.fire({
+          icon: "warning",
+          title: "Sesión expirada",
+          text: errorMessage,
+          showCancelButton: true,
+          confirmButtonText: "Ir al login",
+          cancelButtonText: "Cerrar",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            navigate("/login"); // Redirigir al login
+          }
+        });
       } else if (error.response?.data?.message) {
         errorMessage = error.response.data.message; // Mensaje específico del backend
       } else if (error.message) {
-        errorMessage = error.message; // Mensaje específico del error
+        errorMessage = error.message; // Mensaje genérico del error
       }
 
       Swal.fire("Error", errorMessage, "error");

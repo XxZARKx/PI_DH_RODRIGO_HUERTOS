@@ -1,211 +1,217 @@
 import React, { useEffect, useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getAuthenticatedUser } from "../provider/user/getAuthUser";
 import { getReservationsByUserId } from "../provider/reservation/getReservationUser";
-import { getVehicleById } from "../provider/vehicle/getVehicleById";
-// import { supabase } from "../../api/supabaseClient";
+import { getAuthenticatedUser } from "../provider/user/getAuthUser";
+import { deleteReservation } from "../provider/reservation/deleteReservation";
+import { updateVehicleStatus } from "../provider/reservation/updateVehicleStatus";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 import Header from "./Header";
 import Footer from "./Footer";
-import Swal from "sweetalert2"; // Importa SweetAlert2
 
 const MisReservas = () => {
-  // const [userId, setUserId] = useState(null);
-  // const [isDataLoaded, setIsDataLoaded] = useState(false); // Estado para controlar si los datos están completamente cargados
-  // const queryClient = useQueryClient();
-  // // Obtener el usuario autenticado
-  // useEffect(() => {
-  //   const fetchUser = async () => {
-  //     try {
-  //       const user = await getAuthenticatedUser();
-  //       if (user) {
-  //         setUserId(user.id); // Establecer el ID del usuario autenticado
-  //       }
-  //     } catch (error) {
-  //       console.error("Error al obtener el usuario autenticado:", error);
-  //     }
-  //   };
-  //   fetchUser();
-  // }, []);
-  // // Consultar las reservas del usuario autenticado
-  // const {
-  //   data: reservations,
-  //   isLoading: loadingReservations,
-  //   error: reservationsError,
-  // } = useQuery({
-  //   queryKey: ["reservations", userId],
-  //   queryFn: () => getReservationsByUserId(userId),
-  //   enabled: !!userId, // Activar la consulta solo si userId está disponible
-  // });
-  // // Consultar los datos de los vehículos relacionados con las reservas
-  // const fetchVehicleData = async (reservations) => {
-  //   const vehicleDataPromises = reservations.map((reservation) =>
-  //     getVehicleById(reservation.vehiculo_id)
-  //   );
-  //   return Promise.all(vehicleDataPromises);
-  // };
-  // const {
-  //   data: vehicles,
-  //   isLoading: loadingVehicles,
-  //   error: vehiclesError,
-  // } = useQuery({
-  //   queryKey: ["vehicles", reservations],
-  //   queryFn: () => fetchVehicleData(reservations),
-  //   enabled: !!reservations && reservations.length > 0,
-  // });
-  // // Función para cancelar la reserva
-  // const cancelReservationMutation = useMutation({
-  //   mutationFn: async (reservationId) => {
-  //     // Eliminar la reserva
-  //     await supabase.from("reserva").delete().eq("id", reservationId);
-  //     // Cambiar el estado del vehículo a "Disponible"
-  //     const reservation = reservations.find((res) => res.id === reservationId);
-  //     await supabase
-  //       .from("vehiculo")
-  //       .update({ estado: "Disponible" })
-  //       .eq("id", reservation.vehiculo_id);
-  //     return reservationId;
-  //   },
-  //   onSuccess: (reservationId) => {
-  //     queryClient.invalidateQueries(["reservations", userId]);
-  //     Swal.fire({
-  //       icon: "success",
-  //       title: "Reserva cancelada",
-  //       text: "La reserva se ha cancelado exitosamente.",
-  //     });
-  //   },
-  //   onError: (error) => {
-  //     Swal.fire({
-  //       icon: "error",
-  //       title: "Error",
-  //       text: "Hubo un error al cancelar la reserva: " + error.message,
-  //     });
-  //   },
-  // });
-  // const handleCancelReservation = (reservationId) => {
-  //   // Confirmación antes de cancelar
-  //   Swal.fire({
-  //     title: "¿Estás seguro?",
-  //     text: "¿Quieres cancelar esta reserva?",
-  //     icon: "warning",
-  //     showCancelButton: true,
-  //     confirmButtonText: "Sí, cancelar",
-  //     cancelButtonText: "No, mantener reserva",
-  //   }).then((result) => {
-  //     if (result.isConfirmed) {
-  //       cancelReservationMutation.mutate(reservationId);
-  //     }
-  //   });
-  // };
-  // // Verificar si todos los datos están cargados
-  // useEffect(() => {
-  //   if (
-  //     !loadingReservations &&
-  //     !loadingVehicles &&
-  //     reservations !== undefined &&
-  //     vehicles !== undefined
-  //   ) {
-  //     setIsDataLoaded(true); // Marcar como cargado cuando ambos datos estén listos
-  //   }
-  // }, [loadingReservations, loadingVehicles, reservations, vehicles]);
-  // // Si los datos aún no están cargados, mostrar un mensaje de carga
-  // if (!isDataLoaded) {
-  //   return <div>Cargando reservas...</div>;
-  // }
-  // // Manejo de errores
-  // if (reservationsError || vehiclesError) {
-  //   return (
-  //     <div>
-  //       Error al cargar los datos:{" "}
-  //       {reservationsError?.message || vehiclesError?.message}
-  //     </div>
-  //   );
-  // }
-  // // Si no hay reservas, mostrar el mensaje correspondiente
-  // if (!reservations || reservations.length === 0) {
-  //   return (
-  //     <div className="min-h-screen flex flex-col justify-center items-center bg-gray-50">
-  //       <div className="bg-white p-6 rounded-lg shadow-lg max-w-md text-center">
-  //         <h2 className="text-xl font-semibold text-gray-700">
-  //           No tienes reservas realizadas
-  //         </h2>
-  //         <p className="text-gray-500 mt-2">
-  //           Actualmente no tienes ninguna reserva registrada. ¿Te gustaría hacer
-  //           una nueva?
-  //         </p>
-  //         <div className="mt-4">
-  //           <button
-  //             className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-  //             onClick={() => (window.location.href = "/vehicles")} // Cambia la URL por la correspondiente
-  //           >
-  //             Hacer una nueva reserva
-  //           </button>
-  //         </div>
-  //       </div>
-  //     </div>
-  //   );
-  // }
-  // // Renderizar las reservas
-  // return (
-  //   <div className="min-h-screen flex flex-col justify-between">
-  //     <Header />
-  //     <div className="container mx-auto p-6">
-  //       <h1 className="text-2xl font-bold mb-4">Mis Reservas</h1>
-  //       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-  //         {reservations.map((reservation, index) => {
-  //           const vehicle = vehicles[index];
-  //           const fechaReserva = new Date(reservation.fecha_reserva);
-  //           const fechaDevolucion = new Date(fechaReserva);
-  //           fechaDevolucion.setDate(fechaReserva.getDate() + reservation.dias); // Calculamos la fecha de devolución
-  //           return (
-  //             <div
-  //               key={reservation.id}
-  //               className="border rounded-lg p-4 shadow-md bg-white"
-  //             >
-  //               <img
-  //                 src={vehicle.imagen_url}
-  //                 alt={`${vehicle.marca} ${vehicle.modelo}`}
-  //                 className="w-full h-40 object-contain rounded-md mb-4"
-  //               />
-  //               <h2 className="text-lg font-bold mb-2">
-  //                 {vehicle.marca} {vehicle.modelo}
-  //               </h2>
-  //               <p>
-  //                 <strong>Matricula:</strong> {vehicle.matricula}
-  //               </p>
-  //               <p>
-  //                 <strong>Categoría:</strong> {vehicle.categoria}
-  //               </p>
-  //               <p>
-  //                 <strong>Días reservados:</strong> {reservation.dias}
-  //               </p>
-  //               <p>
-  //                 <strong>Precio por día:</strong> S/ {vehicle.precio}
-  //               </p>
-  //               <p>
-  //                 <strong>Total:</strong> S/ {reservation.total}
-  //               </p>
-  //               <p>
-  //                 <strong>Fecha de reserva:</strong>{" "}
-  //                 {fechaReserva.toLocaleDateString()}
-  //               </p>
-  //               <p>
-  //                 <strong>Fecha de devolución:</strong>{" "}
-  //                 {fechaDevolucion.toLocaleDateString()}
-  //               </p>
-  //               <button
-  //                 onClick={() => handleCancelReservation(reservation.id)}
-  //                 className="mt-4 bg-red-500 text-white px-4 py-2 rounded-lg"
-  //               >
-  //                 Cancelar Reserva
-  //               </button>
-  //             </div>
-  //           );
-  //         })}
-  //       </div>
-  //     </div>
-  //     <Footer />
-  //   </div>
-  // );
+  const [reservations, setReservations] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
+  // Función para ajustar una fecha sumando un día
+  const adjustDate = (date) => {
+    const adjustedDate = new Date(date);
+    adjustedDate.setDate(adjustedDate.getDate() + 1); // Sumar un día
+    return adjustedDate;
+  };
+
+  // Obtener las reservas del usuario autenticado
+  useEffect(() => {
+    const fetchReservations = async () => {
+      try {
+        // Obtener el usuario autenticado
+        const user = await getAuthenticatedUser(navigate);
+        if (!user || !user.id) {
+          throw new Error("Usuario no autenticado o ID no disponible.");
+        }
+
+        // Obtener las reservas del usuario
+        const userReservations = await getReservationsByUserId(user.id);
+        setReservations(userReservations);
+      } catch (error) {
+        console.error("Error al obtener las reservas:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: error.message || "No se pudieron cargar las reservas.",
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchReservations();
+  }, [navigate]);
+
+  // Función para cancelar una reserva
+  const handleCancelReservation = async (reservationId, vehicleId) => {
+    Swal.fire({
+      title: "¿Estás seguro?",
+      text: "¿Quieres cancelar esta reserva?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, cancelar",
+      cancelButtonText: "No, mantener reserva",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          // Validar que el ID del vehículo esté presente
+          if (!vehicleId) {
+            throw new Error("ID del vehículo no disponible.");
+          }
+
+          // Eliminar la reserva
+          await deleteReservation(reservationId);
+
+          // Actualizar el estado del vehículo a "Disponible"
+          await updateVehicleStatus({ id: vehicleId, status: "Disponible" });
+
+          // Refrescar las reservas
+          const updatedReservations = reservations.filter(
+            (res) => res.id !== reservationId
+          );
+          setReservations(updatedReservations);
+
+          Swal.fire({
+            icon: "success",
+            title: "Reserva cancelada",
+            text: "La reserva ha sido cancelada exitosamente.",
+          });
+        } catch (error) {
+          console.error("Error al cancelar la reserva:", error);
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text:
+              error.message ||
+              "Hubo un problema al cancelar la reserva. Por favor, intenta nuevamente.",
+          });
+        }
+      }
+    });
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <p className="text-lg font-medium text-gray-700">
+          Cargando reservas...
+        </p>
+      </div>
+    );
+  }
+
+  if (reservations.length === 0) {
+    return (
+      <div className="min-h-screen flex flex-col bg-gray-100">
+        {/* Header */}
+        <Header />
+
+        {/* Contenido principal */}
+        <div className="flex-grow flex items-center justify-center p-6">
+          <div className="bg-white p-8 rounded-lg shadow-md text-center max-w-md w-full">
+            <h2 className="text-xl font-semibold text-gray-700 mb-4">
+              No tienes reservas realizadas
+            </h2>
+            <p className="text-gray-500 mb-6">
+              Actualmente no tienes ninguna reserva registrada. ¿Te gustaría
+              hacer una nueva?
+            </p>
+            <button
+              className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
+              onClick={() => navigate("/vehicles")}
+            >
+              Hacer una nueva reserva
+            </button>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <Footer />
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen flex flex-col bg-gray-100">
+      {/* Header */}
+      <Header />
+
+      {/* Contenido principal */}
+      <div className="container mx-auto p-6 flex-grow">
+        <h1 className="text-2xl font-bold mb-6 text-gray-800">Mis Reservas</h1>
+
+        {/* Lista de reservas */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {reservations.map((reserva) => (
+            <div
+              key={reserva.id}
+              className="border rounded-lg p-4 shadow-md bg-white"
+            >
+              {/* Imagen del vehículo */}
+              <div className="mb-4">
+                <img
+                  src={reserva.vehiculo.imagenUrl || "/default-image.jpg"}
+                  alt={`${reserva.vehiculo.marca} ${reserva.vehiculo.modelo}`}
+                  className="w-full h-40 object-cover rounded-md"
+                />
+              </div>
+
+              {/* Detalles del vehículo */}
+              <div className="mb-2">
+                <strong className="block text-sm font-medium text-gray-600">
+                  Vehículo:
+                </strong>
+                <p className="text-lg font-semibold">
+                  {reserva.vehiculo.marca} {reserva.vehiculo.modelo}
+                </p>
+              </div>
+              <div className="mb-2">
+                <strong className="block text-sm font-medium text-gray-600">
+                  Fecha de reserva:
+                </strong>
+                <p>{adjustDate(reserva.fechaReserva).toLocaleDateString()}</p>
+              </div>
+              <div className="mb-2">
+                <strong className="block text-sm font-medium text-gray-600">
+                  Fecha de devolución:
+                </strong>
+                <p>
+                  {adjustDate(reserva.fechaDevolucion).toLocaleDateString()}
+                </p>
+              </div>
+              <div className="mb-4">
+                <strong className="block text-sm font-medium text-gray-600">
+                  Total:
+                </strong>
+                <p className="text-lg font-semibold text-green-600">
+                  ${reserva.total}
+                </p>
+              </div>
+
+              {/* Botón para cancelar la reserva */}
+              <button
+                onClick={() =>
+                  handleCancelReservation(reserva.id, reserva.vehiculo.id)
+                }
+                className="mt-4 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 transition duration-300"
+              >
+                Cancelar Reserva
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Footer */}
+      <Footer />
+    </div>
+  );
 };
 
 export default MisReservas;

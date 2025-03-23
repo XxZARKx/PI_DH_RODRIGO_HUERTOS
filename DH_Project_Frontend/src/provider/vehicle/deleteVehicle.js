@@ -2,7 +2,7 @@ import api from "../../../api/api";
 
 export const deleteVehicle = async (id) => {
 	try {
-		const { data, error } = await api.delete(`/vehiculo/${id}`);
+		const { data, error } = await api.delete(`/vehiculos/${id}`);
 
 		if (error) {
 			console.error("Error al eliminar el vehículo:", error);

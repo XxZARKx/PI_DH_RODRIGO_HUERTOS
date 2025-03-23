@@ -23,7 +23,7 @@ const VehiculosDisponibles = () => {
   });
 
   const availableVehicles = vehicles.filter(
-    (vehicle) => vehicle.estado === "Disponible"
+    (vehicle) => vehicle.estado !== "En mantenimiento"
   );
 
   const totalPages = Math.ceil(availableVehicles.length / vehiclesPerPage);

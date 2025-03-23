@@ -71,14 +71,14 @@ const DetallesVehiculo = () => {
         const endDate = new Date(reservation.fechaDevolucion);
 
         // Asegúrate de que las fechas sean UTC
-        startDate.setHours(0, 0, 0, 0); // Establecer la hora a medianoche
-        endDate.setHours(0, 0, 0, 0); // Establecer la hora a medianoche
+        startDate.setUTCHours(0, 0, 0, 0); // Establecer la hora a medianoche en UTC
+        endDate.setUTCHours(0, 0, 0, 0); // Establecer la hora a medianoche en UTC
 
         const dates = [];
         for (
           let date = new Date(startDate);
           date <= endDate;
-          date.setDate(date.getDate() + 1)
+          date.setUTCDate(date.getUTCDate() + 1)
         ) {
           dates.push(new Date(date)); // Crear una nueva fecha para evitar mutaciones
         }
@@ -86,19 +86,17 @@ const DetallesVehiculo = () => {
       })
     : [];
 
-  console.log("Fechas reservadas:", reservedDates); // Depuración
-
   // Función para verificar si una fecha está reservada
   const isReservedDate = (date) => {
     // Normalizar la fecha para comparación
     const normalizedDate = new Date(date);
-    normalizedDate.setHours(0, 0, 0, 0);
+    normalizedDate.setUTCHours(0, 0, 0, 0); // Convertir a UTC
 
     return reservedDates.some(
       (reservedDate) =>
-        reservedDate.getFullYear() === normalizedDate.getFullYear() &&
-        reservedDate.getMonth() === normalizedDate.getMonth() &&
-        reservedDate.getDate() === normalizedDate.getDate()
+        reservedDate.getUTCFullYear() === normalizedDate.getUTCFullYear() &&
+        reservedDate.getUTCMonth() === normalizedDate.getUTCMonth() &&
+        reservedDate.getUTCDate() === normalizedDate.getUTCDate()
     );
   };
 
@@ -177,7 +175,7 @@ const DetallesVehiculo = () => {
                 {/* Calendario */}
                 <div>
                   <strong className="text-[#566C85] block mb-2">
-                    Calendario de Reservas:
+                    Calendario de dias reservados:
                   </strong>
                   <DatePicker
                     selected={null} // No seleccionar ninguna fecha inicialmente

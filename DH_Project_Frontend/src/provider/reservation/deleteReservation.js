@@ -3,7 +3,7 @@ import api from "../../../api/api";
 export const deleteReservation = async (reservationId) => {
 	try {
 		// Eliminar la reserva de la base de datos
-		const { data, error } = await api.delete(`/reserva/${reservationId}`);
+		const { data, error } = await api.delete(`/reservas/${reservationId}`);
 
 		if (error) {
 			throw new Error(error.message);

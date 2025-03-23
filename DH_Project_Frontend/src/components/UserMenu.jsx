@@ -24,6 +24,13 @@ const UserMenu = ({ user: propUser, onLogout, isMobile = false }) => {
     window.location.reload();
   };
 
+  // Función para obtener las iniciales del usuario
+  const getUserInitials = (nombre, apellido) => {
+    const firstInitial = nombre?.charAt(0).toUpperCase() || "";
+    const lastInitial = apellido?.charAt(0).toUpperCase() || "";
+    return `${firstInitial}${lastInitial}`;
+  };
+
   const renderDesktopMenu = () =>
     user && (
       <div className="relative inline-block text-left">
@@ -32,7 +39,7 @@ const UserMenu = ({ user: propUser, onLogout, isMobile = false }) => {
           onClick={toggleMenu}
         >
           <span className="font-normal capitalize">
-            {user?.nombre ?? "Usuario"} {user?.apellido ?? ""}
+            {getUserInitials(user?.nombre, user?.apellido)}
           </span>
           <img src={Avatar} alt="Avatar" className="w-10 h-10 rounded-full" />
         </div>

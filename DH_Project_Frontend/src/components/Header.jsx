@@ -37,6 +37,13 @@ const Header = () => {
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
+  // Función para obtener las iniciales del usuario
+  const getUserInitials = (nombre, apellido) => {
+    const firstInitial = nombre?.charAt(0).toUpperCase() || "";
+    const lastInitial = apellido?.charAt(0).toUpperCase() || "";
+    return `${firstInitial}${lastInitial}`;
+  };
+
   return (
     <div className="min-h-[10vh] z-30">
       <div className="px-4 md:px-10 z-50 py-2 flex fixed items-center justify-between max-w-full w-full min-h-[10%] bg-[#9C9C9C]">
@@ -66,7 +73,7 @@ const Header = () => {
                     <img src={Avatar} className="rounded-full" />
                   </div>
                   <span className="font-semibold">
-                    {user?.nombre} {user?.apellido}
+                    {getUserInitials(user?.nombre, user?.apellido)}
                   </span>
                 </div>
               ) : (

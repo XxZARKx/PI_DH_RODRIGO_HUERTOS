@@ -4,18 +4,15 @@ import Header from "./Header";
 import Footer from "./Footer";
 import PanelVehicles from "./PanelVehicles";
 import PanelUsers from "./PanelUsers";
-import ReservationHistory from "./ReservationHistory";
 
 const panels = {
   vehiculos: PanelVehicles,
   usuarios: PanelUsers,
-  reservationHistory: ReservationHistory,
 };
 
 const menuItems = [
   { path: "usuarios", label: "Lista de Usuarios" },
   { path: "vehiculos", label: "Autos Disponibles" },
-  { path: "reservationHistory", label: "Historial de reservas" },
 ];
 
 const PanelAdmin = () => {
