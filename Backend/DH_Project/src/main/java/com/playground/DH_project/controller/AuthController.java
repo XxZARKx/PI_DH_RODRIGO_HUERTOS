@@ -65,7 +65,7 @@ public class AuthController {
                     usuario.getRol()
             ));
         } catch (Exception e) {
-            return ResponseEntity.status(401).body("Error al validar el token: " + e.getMessage());
+            return ResponseEntity.status(401).body("Error al validar el token. Por favor, inicia sesión nuevamente.");
         }
     }
 
